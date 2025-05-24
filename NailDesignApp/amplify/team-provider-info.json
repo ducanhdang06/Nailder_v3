@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-naildesignapp-dev-efec4-authRole",
+      "UnauthRoleArn": "arn:aws:iam::899824926598:role/amplify-naildesignapp-dev-efec4-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::899824926598:role/amplify-naildesignapp-dev-efec4-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-naildesignapp-dev-efec4-deployment",
+      "UnauthRoleName": "amplify-naildesignapp-dev-efec4-unauthRole",
+      "StackName": "amplify-naildesignapp-dev-efec4",
+      "StackId": "arn:aws:cloudformation:us-west-2:899824926598:stack/amplify-naildesignapp-dev-efec4/abfe8fe0-3888-11f0-b293-0a6839bd7c2f",
+      "AmplifyAppId": "d2awvbosf6tfc2"
+    },
+    "categories": {
+      "auth": {
+        "naildesignapp62105400": {}
+      }
+    }
+  }
+}
