@@ -18,11 +18,13 @@
       "bundleIdentifier": "com.anonymous.NailDesignApp"
     },
     "android": {
+      "jsEngine": "jsc",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.NailDesignApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"

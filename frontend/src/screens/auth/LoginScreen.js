@@ -169,7 +169,7 @@ const LoginScreen = ({ navigation }) => {
               // onPress={handleAppleSignIn}
             >
               <Image
-                source={require("../../assets/apple-logo.png")} // White icon PNG with transparent background
+                source={require("../../assets/apple-logo.png")} 
                 style={authStyles.socialIcon}
               />
               <Text style={authStyles.socialButtonText}>
