@@ -25,6 +25,8 @@ import {
 } from "aws-amplify/auth";
 import authStyles from "../../styles/authStyles";
 import GradientButton from "../../components/GradientButton";
+import { API_BASE_URL } from "../../config";
+
 const { width, height } = Dimensions.get("window");
 
 const LoginScreen = ({ navigation }) => {
@@ -37,6 +39,21 @@ const LoginScreen = ({ navigation }) => {
         const user = await getCurrentUser();
         const attrs = await fetchUserAttributes();
         const role = attrs["custom:userType"];
+
+        const token = (await fetchAuthSession()).tokens?.idToken?.toString();
+
+        await fetch(`${API_BASE_URL}/api/users`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            full_name: attrs.name,
+            email: attrs.email,
+            role: role,
+          }),
+        });
 
         console.log("🟢 Auto-login as:", role);
 
@@ -61,6 +78,23 @@ const LoginScreen = ({ navigation }) => {
 
       // get the user attributes
       const attributes = await fetchUserAttributes();
+
+      const token = (await fetchAuthSession()).tokens?.idToken?.toString();
+
+      if (token) {
+        await fetch(`${API_BASE_URL}/api/users`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            full_name: attributes.name,
+            email: attributes.email,
+            role: attributes["custom:userType"],
+          }),
+        });
+      }
 
       const role = attributes["custom:userType"];
       Alert.alert("Login successful!", `Role: ${role}`);
@@ -169,7 +203,7 @@ const LoginScreen = ({ navigation }) => {
               // onPress={handleAppleSignIn}
             >
               <Image
-                source={require("../../assets/apple-logo.png")} 
+                source={require("../../assets/apple-logo.png")}
                 style={authStyles.socialIcon}
               />
               <Text style={authStyles.socialButtonText}>

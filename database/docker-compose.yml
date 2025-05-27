@@ -1,0 +1,14 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    container_name: nails-postgres-v1
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: nailsdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql

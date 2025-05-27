@@ -1,0 +1,14 @@
+{
+  "resourceName": "nailimages",
+  "policyUUID": "d7905d3f",
+  "bucketName": "naildesignapp9426f6b0474d445eb9f312bc6a79b014",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

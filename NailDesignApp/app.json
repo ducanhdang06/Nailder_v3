@@ -15,7 +15,12 @@
     "ios": {
       "supportsTablet": true,
       "jsEngine": "jsc",
-      "bundleIdentifier": "com.anonymous.NailDesignApp"
+      "bundleIdentifier": "com.anonymous.NailDesignApp",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Give Nailder permission to save photos",
+        "NSCameraUsageDescription": "Give Nailder permission to access your camera",
+        "NSMicrophoneUsageDescription": "Give Nailder permission to use your microphone"
+      }
     },
     "android": {
       "jsEngine": "jsc",
