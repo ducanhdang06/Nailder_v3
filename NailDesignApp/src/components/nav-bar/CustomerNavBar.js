@@ -4,28 +4,28 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import navbarStyles from "../../styles/navbarStyles";
 
-const TechnicianNavBar = ({ activeTab, onTabPress }) => {
+const CustomerNavbar = ({ activeTab, onTabPress }) => {
   const tabs = [
     {
-      id: "home",
-      label: "Home",
-      iconOutlined: "home-outline",
-      iconFilled: "home",
-      screen: "TechnicianHome",
+      id: "search",
+      label: "Search",
+      iconOutlined: "search-outline",
+      iconFilled: "search",
+      screen: "CustomerSearch",
     },
     {
-      id: "posted",
-      label: "Posted",
-      iconOutlined: "grid-outline",
-      iconFilled: "grid",
-      screen: "TechnicianPosted",
+      id: "saved",
+      label: "Saved",
+      iconOutlined: "bookmark-outline",
+      iconFilled: "bookmark",
+      screen: "CustomerSaved",
     },
     {
-      id: "upload",
+      id: "explore",
       label: "",
-      iconOutlined: "add",
-      iconFilled: "add",
-      screen: "UploadDesign",
+      iconOutlined: "compass",
+      iconFilled: "compass",
+      screen: "SwipeScreen",
       isSpecial: true,
     },
     {
@@ -33,14 +33,14 @@ const TechnicianNavBar = ({ activeTab, onTabPress }) => {
       label: "Chat",
       iconOutlined: "chatbubble-outline",
       iconFilled: "chatbubble",
-      screen: "TechnicianChat",
+      screen: "CustomerChat",
     },
     {
       id: "profile",
       label: "Profile",
       iconOutlined: "person-outline",
       iconFilled: "person",
-      screen: "TechnicianProfile",
+      screen: "CustomerProfile",
     },
   ];
 
@@ -100,4 +100,4 @@ const TechnicianNavBar = ({ activeTab, onTabPress }) => {
   );
 };
 
-export default TechnicianNavBar;
+export default CustomerNavbar;
