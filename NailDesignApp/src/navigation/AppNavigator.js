@@ -4,10 +4,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/auth/LoginScreen';
 import SignupScreen from '../screens/auth/SignupScreen';
 import CustomerHome from '../screens/CustomerHome';
-import TechnicianHome from '../screens/TechnicianHome';
+import TechnicianHome from '../screens/technician/TechnicianHome';
 import ConfirmSignUpScreen from '../screens/auth/ConfirmSignUpScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
-import UploadDesignScreen from '../screens/UploadDesignScreen';
+import UploadDesignScreen from '../screens/technician/UploadDesignScreen';
+import TechnicianLayout from '../screens/TechnicianLayout';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,8 +21,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="ConfirmSignUp" component={ConfirmSignUpScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="CustomerHome" component={CustomerHome} options={{ headerShown: false }} />
-        <Stack.Screen name="TechnicianHome" component={TechnicianHome} options={{ headerShown: false }} />
-        <Stack.Screen name="UploadDesign" component={UploadDesignScreen} option={{ headerShown: false}} />
+        <Stack.Screen name="TechnicianHome" component={TechnicianLayout} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

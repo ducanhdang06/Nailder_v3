@@ -39,7 +39,6 @@ const LoginScreen = ({ navigation }) => {
         const user = await getCurrentUser();
         const attrs = await fetchUserAttributes();
         const role = attrs["custom:userType"];
-
         const token = (await fetchAuthSession()).tokens?.idToken?.toString();
 
         await fetch(`${API_BASE_URL}/api/users`, {
@@ -78,7 +77,6 @@ const LoginScreen = ({ navigation }) => {
 
       // get the user attributes
       const attributes = await fetchUserAttributes();
-
       const token = (await fetchAuthSession()).tokens?.idToken?.toString();
 
       if (token) {

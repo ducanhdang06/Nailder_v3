@@ -1,8 +1,7 @@
-import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { signOut } from "aws-amplify/auth";
 
-const TechnicianHome = ({ navigation }) => {
+const TechnicianProfile = ({ navigation }) => {
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -15,12 +14,8 @@ const TechnicianHome = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome, Technician!</Text>
+      <Text style={styles.text}>Technician Profile</Text>
       <Button title="Sign Out" onPress={handleSignOut} />
-      <Button
-        title="Upload New Design"
-        onPress={() => navigation.navigate("UploadDesign")}
-      />
     </View>
   );
 };
@@ -37,4 +32,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TechnicianHome;
+export default TechnicianProfile;
