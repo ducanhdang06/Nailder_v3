@@ -24,6 +24,13 @@ CREATE TABLE design_tags (
   PRIMARY KEY (design_id, tag)
 );
 
+CREATE TABLE design_images (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  design_id UUID REFERENCES designs(id) ON DELETE CASCADE,
+  image_url TEXT NOT NULL,
+  uploaded_at TIMESTAMP DEFAULT NOW()
+);
+
 -- MATCHES (swipes)
 CREATE TABLE matches (
   id UUID PRIMARY KEY,
