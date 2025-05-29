@@ -69,6 +69,17 @@ const LoginScreen = ({ navigation }) => {
     checkExistingSession();
   }, []);
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigation.replace("Login");
+      console.log("Reset/Logout"); // or navigation.navigate
+    } catch (error) {
+      console.error("Error", error);
+      Alert.alert("Error", "Could not sign out. Please try again.");
+    }
+  };
+
   const handleLogin = async () => {
     console.log("🧪 Attempting sign in with:", { email, password });
     try {
@@ -77,7 +88,12 @@ const LoginScreen = ({ navigation }) => {
 
       // get the user attributes
       const attributes = await fetchUserAttributes();
+      const session = await fetchAuthSession();
+      console.log("🔑 Full Auth Session:", JSON.stringify(session, null, 2));
+
       const token = (await fetchAuthSession()).tokens?.idToken?.toString();
+      console.log("Token :", token);
+      console.log("API URL: ", API_BASE_URL);
 
       if (token) {
         await fetch(`${API_BASE_URL}/api/users`, {
@@ -209,6 +225,10 @@ const LoginScreen = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
           )}
+
+          <TouchableOpacity onPress={handleSignOut}>
+            <Text style={authStyles.socialButtonText}>Reset Session</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={authStyles.footer}>

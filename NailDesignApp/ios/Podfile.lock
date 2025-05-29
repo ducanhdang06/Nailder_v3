@@ -1,5 +1,5 @@
 PODS:
-  - AmplifyRTNCore (1.1.9):
+  - AmplifyRTNCore (1.1.10):
     - RCT-Folly
     - RCTRequired
     - RCTTypeSafety
@@ -2445,7 +2445,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AmplifyRTNCore: 4a08b4955ee602a371ea970d5035be43f81261d5
+  AmplifyRTNCore: 919d0884addec22ea5ec43d22a7154cdbd5fad05
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   EXConstants: 9f310f44bfedba09087042756802040e464323c0

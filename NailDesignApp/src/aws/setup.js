@@ -1,5 +1,6 @@
 import { Amplify} from 'aws-amplify';
 import awsExports from '../../aws-exports';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const configureAmplify = () => {
   try {
@@ -12,6 +13,7 @@ const configureAmplify = () => {
     // Configure Amplify with additional settings
     Amplify.configure({
       ...awsExports,
+      storage: AsyncStorage,
       Analytics: { disabled: true },
     });
     
