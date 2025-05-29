@@ -1,6 +1,6 @@
 // src/config.js
 
-const DEV_API_URL = 'http://localhost:3000';
+const DEV_API_URL = 'https://e76c-103-160-79-2.ngrok-free.app';
 const PROD_API_URL = 'https://api.yourdomain.com'; // Change to your production URL
 
 export const API_BASE_URL =

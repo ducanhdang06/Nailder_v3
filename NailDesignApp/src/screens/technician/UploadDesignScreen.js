@@ -26,6 +26,8 @@ const UploadDesignScreen = () => {
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState([]);
 
+  const CLOUDFRONT_DOMAIN = "https://djuov8miln44j.cloudfront.net"; // change the cloudfront domain if needed
+
   const pickImage = async (setImage) => {
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
@@ -45,25 +47,49 @@ const UploadDesignScreen = () => {
   };
 
   const uploadToS3 = async (file) => {
-    const response = await fetch(file.uri);
-    const blob = await response.blob();
-    const filename = `${Date.now()}-${file.fileName || "image"}.jpg`;
+    try {
+      // Convert file to blob
+      const response = await fetch(file.uri);
+      const blob = await response.blob();
 
-    // Upload the file
-    const result = await uploadData({
-      key: filename,
-      data: blob,
-      options: {
-        contentType: "image/jpeg",
-      },
-    }).result;
+      // Generate unique filename
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substring(2, 15);
+      const fileExtension = file.fileName
+        ? file.fileName.split(".").pop()
+        : file.type?.includes("image")
+        ? "jpg"
+        : "jpg";
+      const filename = `designs/${timestamp}-${randomId}.${fileExtension}`;
 
-    // Get the URL
-    const urlResult = await getUrl({
-      key: result.key,
-    });
+      // Upload to S3 with guest access (public)
+      const result = await uploadData({
+        key: filename,
+        data: blob,
+        options: {
+          contentType: file.type || "image/jpeg",
+          contentDisposition: "inline",
+          accessLevel: "guest", // This makes it publicly accessible
+        },
+      }).result;
 
-    return urlResult.url.toString();
+      console.log("Upload successful:", result);
+
+      // Get the public URL using Amplify's getUrl
+      const publicUrl = `${CLOUDFRONT_DOMAIN}/public/${filename}`;
+
+      return {
+        key: filename,
+        url: publicUrl,
+        success: true,
+      };
+    } catch (error) {
+      console.error("S3 Upload Error:", error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
   };
 
   const addTag = () => {
@@ -102,21 +128,46 @@ const UploadDesignScreen = () => {
 
     try {
       console.log("Uploading main image...");
-      const mainUrl = await uploadToS3(mainImage);
-      console.log("Main image uploaded:", mainUrl);
+      const mainResult = await uploadToS3(mainImage);
+
+      // Check if upload was successful
+      if (!mainResult.success) {
+        Alert.alert(
+          "Upload Failed",
+          mainResult.error || "Failed to upload main image"
+        );
+        return;
+      }
+
+      console.log("Main image uploaded:", mainResult.url);
 
       console.log(`Uploading ${extraImages.length} extra images...`);
-      const extraUrls = await Promise.all(
+      const extraResults = await Promise.all(
         extraImages.map(async (img, index) => {
           console.log(`Uploading extra image ${index + 1}...`);
-          const url = await uploadToS3(img);
-          console.log(`Extra image ${index + 1} uploaded:`, url);
-          return url;
+          const result = await uploadToS3(img);
+          console.log(`Extra image ${index + 1} uploaded:`, result);
+          return result;
         })
       );
 
-      // update database via backend
+      // Check if any extra image uploads failed
+      const failedUploads = extraResults.filter((result) => !result.success);
+      if (failedUploads.length > 0) {
+        Alert.alert("Upload Failed", "Some extra images failed to upload");
+        return;
+      }
+
+      // Extract URLs from successful results
+      const extraUrls = extraResults.map((result) => result.url);
+
+      // Update database via backend
       const token = (await fetchAuthSession()).tokens?.idToken?.toString();
+
+      if (!token) {
+        Alert.alert("Authentication Error", "Please log in again");
+        return;
+      }
 
       const res = await fetch(`${API_BASE_URL}/api/designs`, {
         method: "POST",
@@ -127,7 +178,7 @@ const UploadDesignScreen = () => {
         body: JSON.stringify({
           title,
           description,
-          image_url: mainUrl,
+          image_url: mainResult.url, // Use the URL from the result object
           tags, // array of tags (e.g., ['spring', 'pink'])
           extra_images: extraUrls, // array of extra image S3 URLs
         }),
@@ -145,19 +196,20 @@ const UploadDesignScreen = () => {
               setTitle("");
               setTagInput("");
               setTags([]);
-            }
-          }
+            },
+          },
         ]);
         // Optionally reset state or navigate
       } else {
         const error = await res.json();
         Alert.alert("❌ Upload Failed", error.error || "Unknown error.");
       }
-
-      Alert.alert("Success", "Design uploaded!");
     } catch (err) {
-      console.error(err);
-      Alert.alert("Upload failed", err.message);
+      console.error("Submit error:", err);
+      Alert.alert(
+        "Upload failed",
+        err.message || "An unexpected error occurred"
+      );
     }
   };
 
@@ -279,7 +331,7 @@ const UploadDesignScreen = () => {
 
             <View style={uploadStyles.tagInputContainer}>
               <TextInput
-                maxLength={20}
+                maxLength={10}
                 placeholder="Add tag (e.g. 'spring', 'glitter')"
                 value={tagInput}
                 onChangeText={setTagInput}

@@ -22,7 +22,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = NailDesignApp/Info.plist; sourceTree = "<group>"; };
 		1434FFB514F885D95DFA496F /* Pods-NailDesignApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NailDesignApp.release.xcconfig"; path = "Target Support Files/Pods-NailDesignApp/Pods-NailDesignApp.release.xcconfig"; sourceTree = "<group>"; };
 		4968F7541B7F3C93CCA85E08 /* libPods-NailDesignApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NailDesignApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		91A3F61EFDCCE221FC09B6E9 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = NailDesignApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		91A3F61EFDCCE221FC09B6E9 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = NailDesignApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		92BBBE1652131C28F7C39B64 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-NailDesignApp/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = NailDesignApp/SplashScreen.storyboard; sourceTree = "<group>"; };
 		AED99719DC098456E7857092 /* Pods-NailDesignApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NailDesignApp.debug.xcconfig"; path = "Target Support Files/Pods-NailDesignApp/Pods-NailDesignApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -64,7 +64,6 @@
 				AED99719DC098456E7857092 /* Pods-NailDesignApp.debug.xcconfig */,
 				1434FFB514F885D95DFA496F /* Pods-NailDesignApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -319,6 +318,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = NailDesignApp/NailDesignApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Q88W3MPB49;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -355,6 +355,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = NailDesignApp/NailDesignApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Q88W3MPB49;
 				INFOPLIST_FILE = NailDesignApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
