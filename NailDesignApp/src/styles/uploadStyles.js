@@ -2,7 +2,7 @@ import { StyleSheet, Platform } from "react-native";
 import { Dimensions } from "react-native";
 
 const { width } = Dimensions.get("window");
-const uploadStyles = {
+export const uploadStyles = {
     scrollContainer: {
       flexGrow: 1,
       paddingBottom: 40,
@@ -153,5 +153,3 @@ const uploadStyles = {
       letterSpacing: 0.5,
     },
   };
-
-export default uploadStyles;

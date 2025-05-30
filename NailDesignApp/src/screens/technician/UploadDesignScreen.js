@@ -15,8 +15,8 @@ import * as ImagePicker from "expo-image-picker";
 import { uploadData, getUrl } from "aws-amplify/storage";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { API_BASE_URL } from "../../config";
-import authStyles from "../../styles/authStyles";
-import uploadStyles from "../../styles/uploadStyles";
+import { authStyles } from "../../styles/authStyles";
+import { uploadStyles } from "../../styles/uploadStyles";
 
 const UploadDesignScreen = () => {
   const [mainImage, setMainImage] = useState(null);

@@ -28,7 +28,7 @@ router.post('/', verifyToken, async (req, res) => {
     // Insert into designs
     const result = await client.query(
       `INSERT INTO designs (id, image_url, title, description, tech_id, created_at)
-       VALUES (gen_random_uuid(), $1, $2, $3, $4, NOW())
+       VALUES (gen_random_uuid(), $1, $2, $3, $4, NOW() AT TIME ZONE 'UTC')
        RETURNING id`,
       [image_url, title, description, techId]
     );
@@ -64,5 +64,39 @@ router.post('/', verifyToken, async (req, res) => {
     client.release();
   }
 });
+
+// GET /api/designs/mine
+router.get('/mine', verifyToken, async (req, res) => {
+    const techId = req.user.sub;
+    try {
+      const { rows } = await db.query(
+        `
+        SELECT 
+          d.id,
+          d.title,
+          d.description,
+          d.image_url,
+          d.likes,
+          d.created_at AT TIME ZONE 'UTC' AS created_at,
+          COALESCE(
+            STRING_AGG(dt.tag, ',' ORDER BY dt.tag), 
+            ''
+          ) AS tags
+        FROM designs d
+        LEFT JOIN design_tags dt ON d.id = dt.design_id
+        WHERE d.tech_id = $1
+        GROUP BY d.id
+        ORDER BY d.created_at DESC
+        `,
+        [techId]
+      );
+  
+      res.status(200).json(rows);
+    } catch (err) {
+      console.error("❌ Error fetching technician's designs:", err);
+      res.status(500).json({ error: 'Failed to fetch your designs' });
+    }
+  });
+  
 
 module.exports = router;

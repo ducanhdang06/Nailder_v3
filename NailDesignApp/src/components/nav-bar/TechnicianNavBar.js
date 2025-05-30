@@ -2,7 +2,7 @@ import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import navbarStyles from "../../styles/navbarStyles";
+import { navbarStyles } from "../../styles/navbarStyles";
 
 const TechnicianNavBar = ({ activeTab, onTabPress }) => {
   const tabs = [
