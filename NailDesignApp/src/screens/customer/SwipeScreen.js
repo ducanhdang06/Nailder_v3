@@ -57,6 +57,8 @@ const SwipeScreen = () => {
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
+
+      console.log(`Swipe recorded: ${designId} - ${liked ? 'liked' : 'passed'}`);
     } catch (err) {
       console.error("Failed to record swipe:", err);
       // You might want to show a toast or some user feedback here
@@ -66,38 +68,25 @@ const SwipeScreen = () => {
   const handleSwipeLeft = useCallback((design) => {
     console.log("Swiped left on:", design.title);
     postSwipe(design.id, false);
-    
-    // Remove the swiped design from the local state
-    setDesigns(prevDesigns => prevDesigns.filter(d => d.id !== design.id));
   }, [postSwipe]);
 
   const handleSwipeRight = useCallback((design) => {
     console.log("Swiped right on:", design.title);
     postSwipe(design.id, true);
-    
-    // Remove the swiped design from the local state
-    setDesigns(prevDesigns => prevDesigns.filter(d => d.id !== design.id));
   }, [postSwipe]);
 
   const handleSwipeUp = useCallback((design) => {
     console.log("Super liked:", design.title);
-    // TODO: Implement super like API call
     postSwipe(design.id, true); // For now, treat as regular like
-    
-    // Remove the swiped design from the local state
-    setDesigns(prevDesigns => prevDesigns.filter(d => d.id !== design.id));
   }, [postSwipe]);
 
-  const handleRefresh = useCallback(() => {
-    setRefreshing(true);
-    fetchDesigns();
-  }, [fetchDesigns]);
-
   const handleNoMoreCards = useCallback(() => {
-    // Called when user has swiped through all cards
-    console.log("No more cards available");
-    // You might want to show a message or fetch more designs
-    fetchDesigns();
+    console.log("No more cards available - will fetch new designs after delay");
+    // Add a small delay to prevent state conflicts
+    setTimeout(() => {
+      setRefreshing(true);
+      fetchDesigns();
+    }, 1000); // 1 second delay to show the "no more cards" message
   }, [fetchDesigns]);
 
   if (loading && !refreshing) {
@@ -114,6 +103,13 @@ const SwipeScreen = () => {
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>Failed to load designs</Text>
         <Text style={styles.errorSubtext}>{error}</Text>
+        <Text style={styles.retryText} onPress={() => {
+          setError(null);
+          setLoading(true);
+          fetchDesigns();
+        }}>
+          Tap to retry
+        </Text>
       </View>
     );
   }
@@ -125,7 +121,6 @@ const SwipeScreen = () => {
         onSwipeLeft={handleSwipeLeft}
         onSwipeRight={handleSwipeRight}
         onSwipeUp={handleSwipeUp}
-        onRefresh={handleRefresh}
         onNoMoreCards={handleNoMoreCards}
         refreshing={refreshing}
       />
@@ -167,6 +162,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryText: {
+    fontSize: 16,
+    color: '#007AFF',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
   },
 });
 

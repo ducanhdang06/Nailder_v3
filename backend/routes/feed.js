@@ -9,15 +9,31 @@ router.get("/unseen", verifyToken, async (req, res) => {
 
   try {
     const { rows } = await db.query(
-    `
-      SELECT d.id, d.title, d.description, d.image_url AS "imageUrl", d.created_at
-      FROM designs d
-      WHERE NOT EXISTS (
-        SELECT 1 FROM matches m
-        WHERE m.design_id = d.id AND m.user_id = $1
-      )
-      ORDER BY d.created_at DESC
-      LIMIT 20
+      `
+    SELECT 
+    d.id, 
+    d.title, 
+    d.description, 
+    d.image_url AS "imageUrl", 
+    d.created_at,
+    d.likes,
+    d.tech_id,
+    u.full_name AS "designerName",
+    u.email AS "designerEmail",
+    COALESCE(
+        STRING_AGG(dt.tag, ',' ORDER BY dt.tag), 
+        ''
+    ) AS "tags"
+    FROM designs d
+    JOIN users u ON d.tech_id = u.id
+    LEFT JOIN design_tags dt ON d.id = dt.design_id
+    WHERE NOT EXISTS (
+      SELECT 1 FROM matches m
+      WHERE m.design_id = d.id AND m.user_id = $1
+    )
+    GROUP BY d.id, d.title, d.description, d.image_url, d.created_at, d.likes, d.tech_id, u.full_name, u.email
+    ORDER BY d.created_at DESC
+    LIMIT 20
     `,
       [userId]
     );
