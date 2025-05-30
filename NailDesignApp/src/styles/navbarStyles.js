@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-const navbarStyles = StyleSheet.create({
+export const navbarStyles = StyleSheet.create({
     container: {
       position: 'absolute',
       bottom: 0,
@@ -57,5 +57,3 @@ const navbarStyles = StyleSheet.create({
       elevation: 8,
     },
   });
-
-  export default navbarStyles;

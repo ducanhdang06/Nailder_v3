@@ -13,7 +13,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Auth } from "aws-amplify";
 import { signUp } from "aws-amplify/auth";
-import authStyles from "../../styles/authStyles";
+import { authStyles } from "../../styles/authStyles";
 
 const { width, height } = Dimensions.get("window");
 
@@ -100,14 +100,14 @@ const SignupScreen = ({ navigation }) => {
               <TouchableOpacity
                 style={[
                   authStyles.roleToggleButton,
-                  role === "customer" && authStyles.roleToggleButtonActive,
+                  role === "Customer" && authStyles.roleToggleButtonActive,
                 ]}
-                onPress={() => setRole("customer")}
+                onPress={() => setRole("Customer")}
               >
                 <Text
                   style={[
                     authStyles.roleToggleText,
-                    role === "customer" && authStyles.roleToggleTextActive,
+                    role === "Customer" && authStyles.roleToggleTextActive,
                   ]}
                 >
                   Customer
@@ -116,14 +116,14 @@ const SignupScreen = ({ navigation }) => {
               <TouchableOpacity
                 style={[
                   authStyles.roleToggleButton,
-                  role === "technician" && authStyles.roleToggleButtonActive,
+                  role === "Technician" && authStyles.roleToggleButtonActive,
                 ]}
-                onPress={() => setRole("technician")}
+                onPress={() => setRole("Technician")}
               >
                 <Text
                   style={[
                     authStyles.roleToggleText,
-                    role === "technician" && authStyles.roleToggleTextActive,
+                    role === "Technician" && authStyles.roleToggleTextActive,
                   ]}
                 >
                   Technician

@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { confirmSignUp, resendSignUpCode } from "aws-amplify/auth";
-import authStyles from "../../styles/authStyles";
+import { authStyles } from "../../styles/authStyles";
 
 const ConfirmSignUpScreen = ({ route, navigation }) => {
   const { email } = route.params || {};

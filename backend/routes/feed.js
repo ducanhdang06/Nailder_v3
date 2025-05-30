@@ -45,4 +45,43 @@ router.get("/unseen", verifyToken, async (req, res) => {
   }
 });
 
+// get the saved designs (where the user swipe right)
+router.get("/saved", verifyToken, async (req, res) => {
+    const userId = req.user.sub;
+  
+    try {
+      const { rows } = await db.query(
+        `SELECT 
+        d.id, 
+        d.title, 
+        d.description, 
+        d.image_url AS "imageUrl", 
+        d.created_at,
+        d.likes,
+        d.tech_id,
+        u.full_name AS "designerName",
+        u.email AS "designerEmail",
+        m.created_at AS "savedAt",
+        COALESCE(
+            STRING_AGG(dt.tag, ',' ORDER BY dt.tag), 
+            ''
+        ) AS "tags"
+      FROM matches m
+      JOIN designs d ON m.design_id = d.id
+      JOIN users u ON d.tech_id = u.id
+      LEFT JOIN design_tags dt ON d.id = dt.design_id
+      WHERE m.user_id = $1 AND m.liked = true
+      GROUP BY d.id, d.title, d.description, d.image_url, d.created_at, d.likes, d.tech_id, u.full_name, u.email, m.created_at
+      ORDER BY m.created_at DESC;
+      `, [userId]
+      );
+  
+      res.status(200).json(rows);
+    } catch (err) {
+      console.error("❌ Error fetching saved designs:", err);
+      res.status(500).json({ error: "Failed to fetch saved designs" });
+    }
+  });
+  
+
 module.exports = router;

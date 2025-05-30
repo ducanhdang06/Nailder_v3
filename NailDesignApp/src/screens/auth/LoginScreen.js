@@ -23,15 +23,17 @@ import {
   fetchAuthSession,
   fetchUserAttributes,
 } from "aws-amplify/auth";
-import authStyles from "../../styles/authStyles";
+import { authStyles } from "../../styles/authStyles";
 import GradientButton from "../../components/GradientButton";
 import { API_BASE_URL } from "../../config";
+import { useUser } from "../../context/userContext";
 
 const { width, height } = Dimensions.get("window");
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const {reloadUser} = useUser();
 
   useEffect(() => {
     const checkExistingSession = async () => {
@@ -53,7 +55,7 @@ const LoginScreen = ({ navigation }) => {
             role: role,
           }),
         });
-
+        await reloadUser();
         console.log("🟢 Auto-login as:", role);
 
         if (role === "technician") {
@@ -109,12 +111,12 @@ const LoginScreen = ({ navigation }) => {
           }),
         });
       }
-
+      await reloadUser();
       const role = attributes["custom:userType"];
       Alert.alert("Login successful!", `Role: ${role}`);
-      if (role === "technician") {
+      if (role === "Technician" || role === "technician") {
         navigation.replace("TechnicianHome");
-      } else if (role === "customer") {
+      } else if (role === "Customer" || role === "customer") {
         navigation.replace("CustomerHome");
       } else {
         Alert.alert("Login successful", `Unknown role: ${role}`);
