@@ -1,55 +1,46 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
   FlatList,
   Image,
-  StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
   SafeAreaView,
-} from 'react-native';
-import { fetchAuthSession } from 'aws-amplify/auth';
-import { API_BASE_URL } from '../../config';
-import { authStyles } from '../../styles/authStyles';
-import { uploadStyles } from '../../styles/uploadStyles';
-import { sDesignsStyles } from '../../styles/sDesignsStyles';
+} from "react-native";
+import { useSavedStore } from "../../store/savedStore";
+import { authStyles } from "../../styles/authStyles";
+import { uploadStyles } from "../../styles/uploadStyles";
+import { sDesignsStyles } from "../../styles/sDesignsStyles";
 
-export default function CustomerSaved() {
-  const [savedDesigns, setSavedDesigns] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function CustomerSaved(props) {
+  const flatListRef = useRef(null);
+  const { savedDesigns, hasFetched, loading, fetchSavedDesigns } =
+    useSavedStore();
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  // ✅ Scroll to top when signal changes
   useEffect(() => {
-    const fetchSavedDesigns = async () => {
-      try {
-        const token = (await fetchAuthSession()).tokens?.idToken?.toString();
-        const res = await fetch(`${API_BASE_URL}/api/feed/saved`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    if (props.scrollToTopSignal) {
+      flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }
+  }, [props.scrollToTopSignal]);
 
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
+  // ✅ Only fetch data if not already fetched
+  useEffect(() => {
+    if (!hasFetched) fetchSavedDesigns();
+  }, [hasFetched]);
 
-        const data = await res.json();
-        setSavedDesigns(data);
-      } catch (err) {
-        console.error('❌ Failed to fetch saved designs:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSavedDesigns();
-  }, []);
+  // Manual pull-to-refresh
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchSavedDesigns(); // re-fetch and update state
+    setRefreshing(false);
+  };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={sDesignsStyles.card}
-      // onPress={() => navigation.navigate('DesignDetail', { design: item })}
-    >
+    <TouchableOpacity style={sDesignsStyles.card}>
       <Image source={{ uri: item.imageUrl }} style={sDesignsStyles.image} />
       <View style={sDesignsStyles.cardContent}>
         <Text style={sDesignsStyles.title} numberOfLines={2}>
@@ -61,7 +52,7 @@ export default function CustomerSaved() {
     </TouchableOpacity>
   );
 
-  if (loading) {
+  if (loading && !hasFetched) {
     return (
       <SafeAreaView style={authStyles.safeArea}>
         <View style={uploadStyles.pageHeader}>
@@ -69,7 +60,9 @@ export default function CustomerSaved() {
         </View>
         <View style={sDesignsStyles.center}>
           <ActivityIndicator size="large" color="#ec4899" />
-          <Text style={sDesignsStyles.loadingText}>Loading your saved designs...</Text>
+          <Text style={sDesignsStyles.loadingText}>
+            Loading your saved designs...
+          </Text>
         </View>
       </SafeAreaView>
     );
@@ -77,7 +70,6 @@ export default function CustomerSaved() {
 
   return (
     <SafeAreaView style={authStyles.safeArea}>
-      {/* Page Header */}
       <View style={uploadStyles.pageHeader}>
         <Text style={uploadStyles.pageHeaderTitle}>Saved Designs</Text>
       </View>
@@ -92,18 +84,18 @@ export default function CustomerSaved() {
           </View>
         ) : (
           <FlatList
+            ref={flatListRef}
             data={savedDesigns}
             keyExtractor={(item) => item.id}
             numColumns={2}
             renderItem={renderItem}
             contentContainerStyle={sDesignsStyles.list}
             showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
           />
         )}
       </View>
     </SafeAreaView>
   );
 }
-
-
-  
