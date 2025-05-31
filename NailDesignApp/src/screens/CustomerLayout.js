@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import CustomerNavbar from '../components/nav-bar/CustomerNavBar';
+import { layoutStyles } from '../styles/layoutStyles';
 
-// Import your screen components
 import CustomerChat from './customer/CustomerChat';
 import CustomerProfile from './customer/CustomerProfile';
 import CustomerSearch from './customer/CustomerSearch';
@@ -12,43 +12,49 @@ import SwipeScreen from './customer/SwipeScreen';
 const CustomerLayout = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('explore');
   const [currentScreen, setCurrentScreen] = useState('SwipeScreen');
+  const [scrollSignals, setScrollSignals] = useState({
+    SwipeScreen: false,
+    CustomerSearch: false,
+    CustomerSaved: false,
+    CustomerChat: false,
+    CustomerProfile: false,
+  });
 
   const handleTabPress = (screen, tabId) => {
+    if (currentScreen === screen) {
+      // Toggle scroll signal to force scroll-to-top
+      setScrollSignals(prev => ({
+        ...prev,
+        [screen]: !prev[screen],
+      }));
+    } else {
+      setCurrentScreen(screen);
+    }
     setActiveTab(tabId);
-    setCurrentScreen(screen);
   };
 
-  const renderCurrentScreen = () => {
-    const screenProps = { 
-      navigation,
-    };
-    
-    switch (currentScreen) {
-      case 'CustomerSearch':
-        console.log("going to customer search");
-        return <CustomerSearch {...screenProps} />;
-      case 'CustomerSaved':
-        console.log("going to customer saved");
-        return <CustomerSaved {...screenProps} />;
-      case 'SwipeScreen':
-        console.log("going to swipe screen");
-        return <SwipeScreen {...screenProps} />;
-      case 'CustomerChat':
-        console.log("going to customer chat");
-        return <CustomerChat {...screenProps} />;
-      case 'CustomerProfile':
-        console.log("going to customer profile");
-        return <CustomerProfile {...screenProps} />;
-      default:
-        return <SwipeScreen {...screenProps} />;
-    }
-  };
+  const screenProps = { navigation };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        {renderCurrentScreen()}
+    <View style={layoutStyles.container}>
+      <View style={layoutStyles.content}>
+        <View style={[layoutStyles.screen, currentScreen === 'SwipeScreen' ? layoutStyles.active : layoutStyles.inactive]}>
+          <SwipeScreen {...screenProps} scrollToTopSignal={scrollSignals['SwipeScreen']} />
+        </View>
+        <View style={[layoutStyles.screen, currentScreen === 'CustomerSearch' ? layoutStyles.active : layoutStyles.inactive]}>
+          <CustomerSearch {...screenProps} scrollToTopSignal={scrollSignals['CustomerSearch']} />
+        </View>
+        <View style={[layoutStyles.screen, currentScreen === 'CustomerSaved' ? layoutStyles.active : layoutStyles.inactive]}>
+          <CustomerSaved {...screenProps} scrollToTopSignal={scrollSignals['CustomerSaved']} />
+        </View>
+        <View style={[layoutStyles.screen, currentScreen === 'CustomerChat' ? layoutStyles.active : layoutStyles.inactive]}>
+          <CustomerChat {...screenProps} scrollToTopSignal={scrollSignals['CustomerChat']} />
+        </View>
+        <View style={[layoutStyles.screen, currentScreen === 'CustomerProfile' ? layoutStyles.active : layoutStyles.inactive]}>
+          <CustomerProfile {...screenProps} scrollToTopSignal={scrollSignals['CustomerProfile']} />
+        </View>
       </View>
+
       <CustomerNavbar 
         activeTab={activeTab} 
         onTabPress={handleTabPress}
@@ -57,15 +63,5 @@ const CustomerLayout = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  content: {
-    flex: 1,
-    paddingBottom: 90, // Space for the navbar
-  },
-});
-
 export default CustomerLayout;
+
