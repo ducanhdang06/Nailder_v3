@@ -1,0 +1,87 @@
+import { StyleSheet } from "react-native";
+
+export const swipeScreenStyles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#fff',
+    },
+    loadingText: {
+      marginTop: 16,
+      fontSize: 16,
+      color: '#666',
+    },
+    errorContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#fff',
+      padding: 20,
+    },
+    errorText: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: '#ff4444',
+      textAlign: 'center',
+      marginBottom: 8,
+    },
+    errorSubtext: {
+      fontSize: 14,
+      color: '#666',
+      textAlign: 'center',
+      marginBottom: 16,
+    },
+    retryText: {
+      fontSize: 16,
+      color: '#007AFF',
+      textAlign: 'center',
+      textDecorationLine: 'underline',
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#fff',
+      padding: 20,
+    },
+    emptyText: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: '#333',
+      textAlign: 'center',
+      marginBottom: 8,
+    },
+    emptySubtext: {
+      fontSize: 14,
+      color: '#666',
+      textAlign: 'center',
+    },
+    refreshOverlay: {
+      position: 'absolute',
+      top: 60,
+      left: 0,
+      right: 0,
+      alignItems: 'center',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderRadius: 20,
+      marginHorizontal: 20,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    refreshText: {
+      marginTop: 8,
+      fontSize: 14,
+      color: '#666',
+      textAlign: 'center',
+    },
+  });
