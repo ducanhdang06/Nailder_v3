@@ -17,7 +17,6 @@ export default function CustomerSaved(props) {
   const flatListRef = useRef(null);
   const { savedDesigns, hasFetched, loading, fetchSavedDesigns } =
     useSavedStore();
-
   const [refreshing, setRefreshing] = useState(false);
 
   // ✅ Scroll to top when signal changes
