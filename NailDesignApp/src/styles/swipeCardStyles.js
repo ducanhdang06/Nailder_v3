@@ -1,0 +1,193 @@
+import { StyleSheet, Dimensions } from "react-native";
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+const CARD_HEIGHT = screenHeight * 0.7;
+const CARD_WIDTH = screenWidth * 0.9;
+export const swipeCardStyles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#f5f5f5",
+    },
+    cardsWrapper: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: 50,
+    },
+    cardContainer: {
+      position: "absolute",
+      width: CARD_WIDTH,
+      height: CARD_HEIGHT,
+      maxHeight: 600,
+    },
+    card: {
+      flex: 1,
+      backgroundColor: "white",
+      borderRadius: 20,
+      overflow: "hidden",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.15,
+      shadowRadius: 8,
+      elevation: 5,
+    },
+    cardImage: {
+      width: "100%",
+      height: "75%",
+      backgroundColor: "#f0f0f0",
+    },
+    cardInfo: {
+      flex: 1,
+      padding: 16,
+      justifyContent: "space-between",
+    },
+    cardTitle: {
+      fontSize: 20,
+      fontWeight: "bold",
+      color: "#333",
+      marginBottom: 12,
+    },
+    designerRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 12,
+    },
+    designerAvatar: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: "#6366f1",
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: 10,
+    },
+    avatarText: {
+      color: "white",
+      fontSize: 12,
+      fontWeight: "bold",
+    },
+    designerName: {
+      flex: 1,
+      fontSize: 14,
+      color: "#666",
+      fontWeight: "500",
+    },
+    likesContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    heartIcon: {
+      fontSize: 16,
+      marginRight: 4,
+    },
+    likesCount: {
+      fontSize: 14,
+      color: "#666",
+      fontWeight: "500",
+    },
+    tagsContainer: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 6,
+    },
+    tag: {
+      backgroundColor: "#f1f5f9",
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: "#e2e8f0",
+    },
+    moreTag: {
+      backgroundColor: "#e2e8f0",
+    },
+    tagText: {
+      fontSize: 12,
+      color: "#475569",
+      fontWeight: "500",
+    },
+    // Swipe indicator styles
+    likeLabel: {
+      position: 'absolute',
+      top: 60,
+      left: 40,
+      backgroundColor: '#4caf50',
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 8,
+      transform: [{ rotate: '-15deg' }],
+      borderWidth: 3,
+      borderColor: '#fff',
+    },
+    likeLabelText: {
+      color: 'white',
+      fontSize: 18,
+      fontWeight: 'bold',
+      letterSpacing: 2,
+    },
+    nopeLabel: {
+      position: 'absolute',
+      top: 60,
+      right: 40,
+      backgroundColor: '#f44336',
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 8,
+      transform: [{ rotate: '15deg' }],
+      borderWidth: 3,
+      borderColor: '#fff',
+    },
+    nopeLabelText: {
+      color: 'white',
+      fontSize: 18,
+      fontWeight: 'bold',
+      letterSpacing: 2,
+    },
+    superLikeLabel: {
+      position: 'absolute',
+      top: 40,
+      left: '50%',
+      transform: [{ translateX: -30 }],
+      backgroundColor: '#2196f3',
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 20,
+      borderWidth: 2,
+      borderColor: '#fff',
+    },
+    superLikeLabelText: {
+      color: 'white',
+      fontSize: 14,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    noMoreCards: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 20,
+    },
+    noMoreCardsText: {
+      fontSize: 22,
+      fontWeight: "bold",
+      color: "#333",
+      textAlign: "center",
+      marginBottom: 8,
+    },
+    noMoreCardsSubtext: {
+      fontSize: 16,
+      color: "#666",
+      textAlign: "center",
+    },
+    emptyState: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 20,
+    },
+    emptyStateText: {
+      fontSize: 18,
+      color: "#666",
+      textAlign: "center",
+    },
+  });
