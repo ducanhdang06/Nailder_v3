@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { getSavedDesigns } from '../services/savedDesigns';
+import { create } from "zustand";
+import { getSavedDesigns } from "../services/savedDesigns";
 
 export const useSavedStore = create((set) => ({
   savedDesigns: [],
@@ -12,7 +12,7 @@ export const useSavedStore = create((set) => ({
       const data = await getSavedDesigns();
       set({ savedDesigns: data, hasFetched: true });
     } catch (err) {
-      console.error('❌ Failed to fetch saved designs:', err);
+      console.error("Error in savedStore.js: ", err);
     } finally {
       set({ loading: false });
     }

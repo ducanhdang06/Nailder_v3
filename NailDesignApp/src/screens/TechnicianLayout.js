@@ -1,72 +1,115 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import TechnicianNavBar from '../components/nav-bar/TechnicianNavBar';
+import React, { useState } from "react";
+import { View, StyleSheet } from "react-native";
+import TechnicianNavBar from "../components/nav-bar/TechnicianNavBar";
 
 // Import your screen components
-import TechnicianHome from './technician/TechnicianHome';
-import TechnicianChat from './technician/TechnicianChat';
-import UploadDesignScreen from './technician/UploadDesignScreen';
-import TechnicianPosted from './technician/TechnicianPosted';
-import TechnicianProfile from './technician/TechnicianProfile';
+import TechnicianHome from "./technician/TechnicianHome";
+import TechnicianChat from "./technician/TechnicianChat";
+import UploadDesignScreen from "./technician/UploadDesignScreen";
+import TechnicianPosted from "./technician/TechnicianPosted";
+import TechnicianProfile from "./technician/TechnicianProfile";
+
+import { layoutStyles } from "../styles/layoutStyles";
 
 const TechnicianLayout = ({ navigation }) => {
-  const [activeTab, setActiveTab] = useState('home');
-  const [currentScreen, setCurrentScreen] = useState('TechnicianHome');
+  const [activeTab, setActiveTab] = useState("home");
+  const [currentScreen, setCurrentScreen] = useState("TechnicianHome");
+  const [scrollSignals, setScrollSignals] = useState({
+    TechnicianHome: false,
+    TechnicianPosted: false,
+    UploadDesign: false,
+    TechnicianProfile: false,
+    TechnicianChat: false,
+  });
 
   const handleTabPress = (screen, tabId) => {
-    setActiveTab(tabId);
-    setCurrentScreen(screen);
-  };
-
-  const navigateToHome = () => {
-    setActiveTab('home');
-    setCurrentScreen('TechnicianHome');
-  };
-
-  const renderCurrentScreen = () => {
-    const screenProps = { 
-      navigation,
-      navigateToHome // Pass this function to UploadDesignScreen
-    };
-    
-    switch (currentScreen) {
-      case 'TechnicianHome':
-        return <TechnicianHome {...screenProps} />;
-      case 'TechnicianChat':
-        return <TechnicianChat {...screenProps} />;
-      case 'UploadDesign':
-        return <UploadDesignScreen {...screenProps} />;
-      case 'TechnicianPosted':
-        return <TechnicianPosted {...screenProps} />;
-      case 'TechnicianProfile':
-        return <TechnicianProfile {...screenProps} />;
-      default:
-        return <TechnicianHome {...screenProps} />;
+    if (currentScreen === screen) {
+      // Toggle scroll signal to force scroll-to-top
+      setScrollSignals((prev) => ({
+        ...prev,
+        [screen]: !prev[screen],
+      }));
+    } else {
+      setCurrentScreen(screen);
     }
+    setActiveTab(tabId);
   };
+
+  const screenProps = { navigation };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        {renderCurrentScreen()}
+    <View style={layoutStyles.container}>
+      <View style={layoutStyles.content}>
+        <View
+          style={[
+            layoutStyles.screen,
+            currentScreen === "TechnicianHome"
+              ? layoutStyles.active
+              : layoutStyles.inactive,
+          ]}
+        >
+          <TechnicianHome
+            {...screenProps}
+            scrollToTopSignal={scrollSignals["TechnicianHome"]}
+          />
+        </View>
+        <View
+          style={[
+            layoutStyles.screen,
+            currentScreen === "TechnicianPosted"
+              ? layoutStyles.active
+              : layoutStyles.inactive,
+          ]}
+        >
+          <TechnicianPosted
+            {...screenProps}
+            scrollToTopSignal={scrollSignals["TechnicianPosted"]}
+          />
+        </View>
+        <View
+          style={[
+            layoutStyles.screen,
+            currentScreen === "UploadDesign"
+              ? layoutStyles.active
+              : layoutStyles.inactive,
+          ]}
+        >
+          <UploadDesignScreen
+            {...screenProps}
+            scrollToTopSignal={scrollSignals["UploadDesign"]}
+          />
+        </View>
+        <View
+          style={[
+            layoutStyles.screen,
+            currentScreen === "TechnicianProfile"
+              ? layoutStyles.active
+              : layoutStyles.inactive,
+          ]}
+        >
+          <TechnicianChat
+            {...screenProps}
+            scrollToTopSignal={scrollSignals["TechnicianChat"]}
+          />
+        </View>
+        <View
+          style={[
+            layoutStyles.screen,
+            currentScreen === "TechnicianProfile"
+              ? layoutStyles.active
+              : layoutStyles.inactive,
+          ]}
+        >
+          <TechnicianProfile
+            {...screenProps}
+            scrollToTopSignal={scrollSignals["TechnicianProfile"]}
+          />
+        </View>
       </View>
-      <TechnicianNavBar 
-        activeTab={activeTab} 
-        onTabPress={handleTabPress}
-      />
+
+      <TechnicianNavBar activeTab={activeTab} onTabPress={handleTabPress} />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  content: {
-    flex: 1,
-    paddingBottom: 90, // Space for the navbar
-  },
-});
 
 export default TechnicianLayout;

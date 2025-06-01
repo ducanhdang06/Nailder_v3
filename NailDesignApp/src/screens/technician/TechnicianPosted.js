@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -8,44 +8,35 @@ import {
   ActivityIndicator,
   SafeAreaView,
 } from "react-native";
-import { fetchAuthSession } from "aws-amplify/auth";
-import { API_BASE_URL } from "../../config";
+import { usePostedStore } from "../../store/postedStore";
 import { authStyles } from "../../styles/authStyles";
 import { uploadStyles } from "../../styles/uploadStyles";
 import { sDesignsStyles } from "../../styles/sDesignsStyles";
 import { formatTimeAgo } from "../../utils/formatTimeAgo";
-import { ConsoleLogger } from "aws-amplify/utils";
 
-export default function TechnicianPosted() {
-  const [postedDesigns, setPostedDesigns] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function TechnicianPosted(props) {
+  const flatListRef = useRef(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const { postedDesigns, loading, hasFetched, fetchPostedDesigns } =
+    usePostedStore();
 
+  // Scroll to top if signal is triggered
   useEffect(() => {
-    const fetchPostedDesigns = async () => {
-      try {
-        const token = (await fetchAuthSession()).tokens?.idToken?.toString();
-        const res = await fetch(`${API_BASE_URL}/api/designs/mine`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    if (props.scrollToTopSignal) {
+      flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }
+  }, [props.scrollToTopSignal]);
 
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
+  // Fetch once on initial load
+  useEffect(() => {
+    if (!hasFetched) fetchPostedDesigns();
+  }, [hasFetched]);
 
-        const data = await res.json();
-        setPostedDesigns(data);
-        console.log(data[0].created_at)
-      } catch (err) {
-        console.error("❌ Failed to fetch posted designs:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPostedDesigns();
-  }, []);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchPostedDesigns();
+    setRefreshing(false);
+  };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity style={sDesignsStyles.card}>
@@ -54,13 +45,15 @@ export default function TechnicianPosted() {
         <Text style={sDesignsStyles.title} numberOfLines={2}>
           {item.title}
         </Text>
-        <Text style={sDesignsStyles.designer}>{formatTimeAgo(item.created_at)}</Text>
+        <Text style={sDesignsStyles.designer}>
+          {formatTimeAgo(item.created_at)}
+        </Text>
         <Text style={sDesignsStyles.likes}>❤️ {item.likes}</Text>
       </View>
     </TouchableOpacity>
   );
 
-  if (loading) {
+  if (loading && !hasFetched) {
     return (
       <SafeAreaView style={authStyles.safeArea}>
         <View style={uploadStyles.pageHeader}>
@@ -92,12 +85,15 @@ export default function TechnicianPosted() {
           </View>
         ) : (
           <FlatList
+            ref={flatListRef}
             data={postedDesigns}
             keyExtractor={(item) => item.id}
             numColumns={2}
             renderItem={renderItem}
             contentContainerStyle={sDesignsStyles.list}
             showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
           />
         )}
       </View>
