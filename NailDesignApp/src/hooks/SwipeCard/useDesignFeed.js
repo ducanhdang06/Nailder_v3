@@ -8,8 +8,8 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import { API_BASE_URL } from '../config';
-import { useUser } from '../context/userContext';
+import { API_BASE_URL } from '../../config';
+import { useUser } from '../../context/userContext';
 
 const MIN_FETCH_INTERVAL = 5000;
 

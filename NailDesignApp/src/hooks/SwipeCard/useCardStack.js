@@ -13,7 +13,7 @@
 // Providing the 3 visible cards for rendering
 
 import { useState, useEffect, useCallback } from "react";
-import { SWIPE_CONSTANTS } from "../constants/swipeConstants";
+import { SWIPE_CONSTANTS } from "../../constants/swipeConstants";
 
 export const useCardStack = (designs, onNoMoreCards) => {
   const [currentIndex, setCurrentIndex] = useState(0);

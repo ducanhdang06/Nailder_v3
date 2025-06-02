@@ -23,7 +23,7 @@ import {
   runOnJS,
 } from "react-native-reanimated";
 import { Gesture } from "react-native-gesture-handler";
-import { SWIPE_CONSTANTS } from "../constants/swipeConstants";
+import { SWIPE_CONSTANTS } from "../../constants/swipeConstants";
 
 export const useSwipeGesture = (removeCard, isAnimating) => {
   // Animation values

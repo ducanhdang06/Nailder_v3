@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { getSavedDesigns } from "../services/savedDesigns";
 
-export const useSavedStore = create((set) => ({
+export const useSavedStore = create((set, get) => ({
   savedDesigns: [],
   hasFetched: false,
   loading: false,
@@ -16,5 +16,12 @@ export const useSavedStore = create((set) => ({
     } finally {
       set({ loading: false });
     }
+  },
+
+  // Optimistically remove a design from the local state
+  removeDesign: (designId) => {
+    const currentDesigns = get().savedDesigns;
+    const updatedDesigns = currentDesigns.filter(design => design.id !== designId);
+    set({ savedDesigns: updatedDesigns });
   },
 }));

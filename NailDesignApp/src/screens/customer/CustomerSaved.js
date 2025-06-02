@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   SafeAreaView,
 } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import { useSavedStore } from "../../store/savedStore";
 import { authStyles } from "../../styles/authStyles";
 import { uploadStyles } from "../../styles/uploadStyles";
@@ -30,6 +31,16 @@ export default function CustomerSaved({ navigation, ...props }) {
   useEffect(() => {
     if (!hasFetched) fetchSavedDesigns();
   }, [hasFetched]);
+
+  // ✅ Refetch data when screen comes back into focus (e.g., after unsaving a design)
+  useFocusEffect(
+    React.useCallback(() => {
+      if (hasFetched) {
+        // Only refetch if we've already fetched before (not on initial load)
+        fetchSavedDesigns();
+      }
+    }, [hasFetched, fetchSavedDesigns])
+  );
 
   // Manual pull-to-refresh
   const onRefresh = async () => {

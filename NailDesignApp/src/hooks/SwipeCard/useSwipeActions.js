@@ -8,7 +8,7 @@
 
 import { useCallback, useState } from 'react';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL } from '../../config';
 
 export const useSwipeActions = (totalDesigns = 0) => {
   const [currentIndex, setCurrentIndex] = useState(0);

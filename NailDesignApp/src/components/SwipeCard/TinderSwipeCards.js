@@ -29,8 +29,8 @@ import { swipeCardStyles } from "../../styles/swipeCardStyles";
 import CardContent from "./CardContent";
 import SwipeIndicators from "./SwipeIndicators";
 import { EmptyState, NoMoreCards } from "./EmptyStates";
-import { useCardStack } from "../../hooks/useCardStack";
-import { useSwipeGesture } from "../../hooks/useSwipeGesture";
+import { useCardStack } from "../../hooks/SwipeCard/useCardStack";
+import { useSwipeGesture } from "../../hooks/SwipeCard/useSwipeGesture";
 
 const TinderSwipeCards = ({
   designs = [],

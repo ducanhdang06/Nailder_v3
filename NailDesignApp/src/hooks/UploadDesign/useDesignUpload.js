@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
-import { uploadToS3 } from '../services/s3Services';
-import { submitDesign } from '../services/submitDesigns';
-import { validateDesignForm } from '../utils/validation';
+import { uploadToS3 } from '../../services/s3Services';
+import { submitDesign } from '../../services/submitDesigns';
+import { validateDesignForm } from '../../utils/validation';
 
 export const useDesignUpload = () => {
   const handleUpload = async (formData, onSuccess) => {

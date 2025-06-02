@@ -39,4 +39,39 @@ router.post('/', verifyToken, async (req, res) => {
   }
 });
 
+// POST /api/matches/unsave
+router.post('/unsave', verifyToken, async (req, res) => {
+    const { design_id } = req.body;
+    const user_id = req.user.sub;
+  
+    const client = await db.connect();
+    try {
+      await client.query('BEGIN');
+  
+      const result = await client.query(`
+        WITH updated AS (
+          UPDATE matches
+          SET liked = FALSE
+          WHERE user_id = $1
+            AND design_id = $2
+            AND liked = TRUE
+          RETURNING design_id
+        )
+        UPDATE designs
+        SET likes = GREATEST(likes - 1, 0)
+        WHERE id IN (SELECT design_id FROM updated)
+      `, [user_id, design_id]);
+  
+      await client.query('COMMIT');
+      res.status(200).json({ message: 'Design unsaved' });
+    } catch (err) {
+      await client.query('ROLLBACK');
+      console.error('❌ Error unsaving design:', err);
+      res.status(500).json({ message: 'Failed to unsave design' });
+    } finally {
+      client.release();
+    }
+  });
+  
+
 module.exports = router;
