@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getSavedDesigns } from "../services/savedDesigns";
+import { savedDesignsApi } from "../services/savedDesigns";
 
 export const useSavedStore = create((set, get) => ({
   savedDesigns: [],
@@ -9,7 +9,7 @@ export const useSavedStore = create((set, get) => ({
   fetchSavedDesigns: async () => {
     set({ loading: true });
     try {
-      const data = await getSavedDesigns();
+      const data = await savedDesignsApi.getSavedDesigns();
       set({ savedDesigns: data, hasFetched: true });
     } catch (err) {
       console.error("Error in savedStore.js: ", err);

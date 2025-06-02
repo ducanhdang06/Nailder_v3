@@ -9,6 +9,7 @@ import DesignHeader from "../../components/DesignDetails/DesignHeader";
 import ImageGallery from "../../components/DesignDetails/ImageGallery";
 import DesignInfo from "../../components/DesignDetails/DesignInfo";
 import ActionButtons from "../../components/DesignDetails/ActionButtons";
+import ConfirmationModal from "../../components/Common/ConfirmationModal";
 
 // Hooks
 import { useImageGallery } from "../../hooks/DesignDetails/useImageGallery";
@@ -40,7 +41,13 @@ const DesignDetailScreen = ({ route, navigation }) => {
   } = useImageGallery(allImages, design.id);
 
   // Design action handlers
-  const { handleContactNow, handleUnsave } = useDesignActions(design, navigation);
+  const { 
+    handleContactNow, 
+    handleUnsave, 
+    showConfirmModal, 
+    handleCloseModal, 
+    performUnsave 
+  } = useDesignActions(design, navigation);
 
   // Navigation handler
   const handleBack = () => navigation.goBack();
@@ -81,6 +88,18 @@ const DesignDetailScreen = ({ route, navigation }) => {
       <ActionButtons 
         onUnsave={handleUnsave}
         onContact={handleContactNow}
+      />
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        visible={showConfirmModal}
+        onClose={handleCloseModal}
+        onConfirm={performUnsave}
+        title="Unsave Design"
+        message={`Are you sure you want to remove "${design.title}" from your saved designs?`}
+        confirmText="Yes, Unsave"
+        cancelText="Cancel"
+        confirmStyle="destructive"
       />
     </SafeAreaView>
   );
