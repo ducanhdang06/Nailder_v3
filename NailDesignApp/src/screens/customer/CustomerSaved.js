@@ -13,7 +13,7 @@ import { authStyles } from "../../styles/authStyles";
 import { uploadStyles } from "../../styles/uploadStyles";
 import { sDesignsStyles } from "../../styles/sDesignsStyles";
 
-export default function CustomerSaved(props) {
+export default function CustomerSaved({ navigation, ...props }) {
   const flatListRef = useRef(null);
   const { savedDesigns, hasFetched, loading, fetchSavedDesigns } =
     useSavedStore();
@@ -38,8 +38,17 @@ export default function CustomerSaved(props) {
     setRefreshing(false);
   };
 
+  // Navigate to design detail screen
+  const handleDesignPress = (design) => {
+    navigation.navigate('DesignDetail', { design });
+  };
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={sDesignsStyles.card}>
+    <TouchableOpacity 
+      style={sDesignsStyles.card}
+      onPress={() => handleDesignPress(item)}
+      activeOpacity={0.7}
+    >
       <Image source={{ uri: item.imageUrl }} style={sDesignsStyles.image} />
       <View style={sDesignsStyles.cardContent}>
         <Text style={sDesignsStyles.title} numberOfLines={2}>

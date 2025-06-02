@@ -8,10 +8,12 @@ import CustomerProfile from "../customer/CustomerProfile";
 import CustomerSearch from "../customer/CustomerSearch";
 import CustomerSaved from "../customer/CustomerSaved";
 import SwipeScreen from "../customer/SwipeScreen";
+import DesignDetailScreen from "../customer/DesignDetailScreen";
 
 const CustomerLayout = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("explore");
   const [currentScreen, setCurrentScreen] = useState("SwipeScreen");
+  const [designDetailData, setDesignDetailData] = useState(null);
   const [scrollSignals, setScrollSignals] = useState({
     SwipeScreen: false,
     CustomerSearch: false,
@@ -33,8 +35,39 @@ const CustomerLayout = ({ navigation }) => {
     setActiveTab(tabId);
   };
 
+  // Navigation function for DesignDetail
+  const navigateToDesignDetail = (design) => {
+    setDesignDetailData(design);
+    setCurrentScreen("DesignDetail");
+  };
+
+  // Back navigation from DesignDetail
+  const navigateBack = () => {
+    setCurrentScreen("CustomerSaved");
+    setDesignDetailData(null);
+  };
+
+  // Custom navigation object for compatibility
+  const customNavigation = {
+    ...navigation,
+    navigate: (screenName, params) => {
+      if (screenName === 'DesignDetail') {
+        navigateToDesignDetail(params.design);
+      } else {
+        navigation.navigate(screenName, params);
+      }
+    },
+    goBack: () => {
+      if (currentScreen === "DesignDetail") {
+        navigateBack();
+      } else {
+        navigation.goBack();
+      }
+    }
+  };
+
   const screenProps = {
-    navigation,
+    navigation: customNavigation,
   };
 
   return (
@@ -105,9 +138,27 @@ const CustomerLayout = ({ navigation }) => {
             scrollToTopSignal={scrollSignals["CustomerProfile"]}
           />
         </View>
+        <View
+          style={[
+            layoutStyles.screen,
+            currentScreen === "DesignDetail"
+              ? layoutStyles.active
+              : layoutStyles.inactive,
+          ]}
+        >
+          {designDetailData && (
+            <DesignDetailScreen
+              navigation={customNavigation}
+              route={{ params: { design: designDetailData } }}
+            />
+          )}
+        </View>
       </View>
 
-      <CustomerNavbar activeTab={activeTab} onTabPress={handleTabPress} />
+      {/* Hide navbar when viewing design details */}
+      {currentScreen !== "DesignDetail" && (
+        <CustomerNavbar activeTab={activeTab} onTabPress={handleTabPress} />
+      )}
     </View>
   );
 };

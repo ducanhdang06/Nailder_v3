@@ -53,28 +53,32 @@ router.get("/saved", verifyToken, async (req, res) => {
   try {
     const { rows } = await db.query(
       `SELECT 
-        d.id, 
-        d.title, 
-        d.description, 
-        d.image_url AS "imageUrl", 
-        d.created_at,
-        d.likes,
-        d.tech_id,
-        u.full_name AS "designerName",
-        u.email AS "designerEmail",
-        m.created_at AS "savedAt",
-        COALESCE(
-            STRING_AGG(dt.tag, ',' ORDER BY dt.tag), 
-            ''
-        ) AS "tags"
-      FROM matches m
-      JOIN designs d ON m.design_id = d.id
-      JOIN users u ON d.tech_id = u.id
-      LEFT JOIN design_tags dt ON d.id = dt.design_id
-      WHERE m.user_id = $1 AND m.liked = true
-      GROUP BY d.id, d.title, d.description, d.image_url, d.created_at, d.likes, d.tech_id, u.full_name, u.email, m.created_at
-      ORDER BY m.created_at DESC;
-      `,
+      d.id, 
+      d.title, 
+      d.description, 
+      d.image_url AS "imageUrl", 
+      d.created_at, 
+      d.likes, 
+      d.tech_id, 
+      u.full_name AS "designerName", 
+      u.email AS "designerEmail", 
+      m.created_at AS "savedAt", 
+      COALESCE(
+        STRING_AGG(dt.tag, ',' ORDER BY dt.tag), 
+        ''
+      ) AS "tags",
+      COALESCE(
+        ARRAY_AGG(di.image_url ORDER BY di.uploaded_at) FILTER (WHERE di.image_url IS NOT NULL),
+        ARRAY[]::TEXT[]
+      ) AS "extraImages"
+    FROM matches m 
+    JOIN designs d ON m.design_id = d.id 
+    JOIN users u ON d.tech_id = u.id 
+    LEFT JOIN design_tags dt ON d.id = dt.design_id 
+    LEFT JOIN design_images di ON d.id = di.design_id
+    WHERE m.user_id = $1 AND m.liked = true 
+    GROUP BY d.id, d.title, d.description, d.image_url, d.created_at, d.likes, d.tech_id, u.full_name, u.email, m.created_at 
+    ORDER BY m.created_at DESC;`,
       [userId]
     );
 
