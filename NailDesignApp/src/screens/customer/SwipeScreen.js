@@ -2,8 +2,8 @@ import React, { useCallback } from "react";
 import { View } from "react-native";
 import TinderSwipeCards from "../../components/SwipeCard/TinderSwipeCards";
 import { swipeScreenStyles } from "../../styles/swipeScreenStyles";
-import { useDesignFeed } from "../../hooks/useDesignFeed";
-import { useSwipeActions } from "../../hooks/useSwipeActions";
+import { useDesignFeed } from "../../hooks/SwipeCard/useDesignFeed";
+import { useSwipeActions } from "../../hooks/SwipeCard/useSwipeActions";
 import {
   LoadingSpinner,
   ErrorState,

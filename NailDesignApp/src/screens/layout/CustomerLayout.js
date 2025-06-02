@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import CustomerNavbar from "../../components/nav-bar/CustomerNavBar";
+import CustomerNavbar from "../../components/NavBar/CustomerNavBar";
 import { layoutStyles } from "../../styles/layoutStyles";
 
 import CustomerChat from "../customer/CustomerChat";

@@ -11,9 +11,9 @@ import { authStyles } from "../../styles/authStyles";
 import { uploadStyles } from "../../styles/uploadStyles";
 
 // Hooks
-import { useImagePicker } from "../../hooks/useImagePicker";
-import { useFormData } from "../../hooks/useFormData";
-import { useDesignUpload } from "../../hooks/useDesignUpload";
+import { useImagePicker } from "../../hooks/UploadDesign/useImagePicker";
+import { useFormData } from "../../hooks/UploadDesign/useFormData";
+import { useDesignUpload } from "../../hooks/UploadDesign/useDesignUpload";
 
 // Components
 import { MainImageSection, ExtraImagesSection } from "../../components/UploadDesign/ImageUploadSection";

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import TechnicianNavBar from "../../components/nav-bar/TechnicianNavBar";
+import TechnicianNavBar from "../../components/NavBar/TechnicianNavBar";
 
 // Import your screen components
 import TechnicianHome from "../technician/TechnicianHome";
