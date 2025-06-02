@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput } from 'react-native';
-import { authStyles } from '../styles/authStyles';
-import { uploadStyles } from '../styles/uploadStyles';
+import { authStyles } from '../../styles/authStyles';
+import { uploadStyles } from '../../styles/uploadStyles';
 
 export const TitleInput = ({ title, setTitle }) => (
   <View style={authStyles.inputContainer}>

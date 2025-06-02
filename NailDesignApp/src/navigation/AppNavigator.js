@@ -5,8 +5,8 @@ import LoginScreen from '../screens/auth/LoginScreen';
 import SignupScreen from '../screens/auth/SignupScreen';
 import ConfirmSignUpScreen from '../screens/auth/ConfirmSignUpScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
-import TechnicianLayout from '../screens/TechnicianLayout';
-import CustomerLayout from '../screens/CustomerLayout';
+import TechnicianLayout from '../screens/layout/TechnicianLayout';
+import CustomerLayout from '../screens/layout/CustomerLayout';
 
 const Stack = createNativeStackNavigator();
 

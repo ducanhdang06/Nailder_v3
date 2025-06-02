@@ -1,11 +1,11 @@
 // components/ProfileScreen.js
 import React from "react";
 import { View, Text, TouchableOpacity, Alert, SafeAreaView } from "react-native";
-import { authStyles } from "../styles/authStyles";
-import { uploadStyles } from "../styles/uploadStyles";
-import { profileStyles } from "../styles/profileStyles";
+import { authStyles } from "../../styles/authStyles";
+import { uploadStyles } from "../../styles/uploadStyles";
+import { profileStyles } from "../../styles/profileStyles";
 
-export default function ProfileScreen({ user, navigation, actionItems }) {
+export default function ProfileScreen({ user, actionItems }) {
   return (
     <SafeAreaView style={authStyles.safeArea}>
       {/* Header */}

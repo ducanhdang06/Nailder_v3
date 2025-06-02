@@ -22,7 +22,7 @@ const SwipeScreen = () => {
     setError
   } = useDesignFeed();
 
-  const { handleSwipe, resetIndex } = useSwipeActions();
+  const { handleSwipe, resetIndex } = useSwipeActions(designs.length);
 
   const handleSwipeLeft = useCallback((design) => {
     handleSwipe(design, false, "👈 Swiped left");

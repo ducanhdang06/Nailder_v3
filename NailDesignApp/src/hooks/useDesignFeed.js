@@ -9,10 +9,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { API_BASE_URL } from '../config';
+import { useUser } from '../context/userContext';
 
 const MIN_FETCH_INTERVAL = 5000;
 
 export const useDesignFeed = () => {
+  const { user } = useUser();
   const [designs, setDesigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,6 +23,7 @@ export const useDesignFeed = () => {
   
   const fetchingRef = useRef(false);
   const lastFetchTimeRef = useRef(0);
+  const hasInitializedRef = useRef(false);
 
   const fetchDesigns = useCallback(async (isRefresh = false) => {
     if (fetchingRef.current) {
@@ -44,7 +47,14 @@ export const useDesignFeed = () => {
       }
       
       const token = (await fetchAuthSession()).tokens?.idToken?.toString();
+      
+      if (!token) {
+        console.log("❌ No auth token available, skipping fetch");
+        return;
+      }
+      
       const batchSize = 20;
+      console.log(`📡 Fetching ${batchSize} designs...`);
       
       const res = await fetch(`${API_BASE_URL}/api/feed/unseen?limit=${batchSize}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -63,12 +73,14 @@ export const useDesignFeed = () => {
         setDesigns(prev => {
           const existingIds = new Set(prev.map(d => d.id));
           const newDesigns = data.filter(d => !existingIds.has(d.id));
+          console.log(`➕ Adding ${newDesigns.length} new unique designs`);
           return [...prev, ...newDesigns];
         });
       }
       
       if (data.length < batchSize) {
         setHasReachedEnd(true);
+        console.log("🏁 Reached end of available designs");
       }
       
       setError(null);
@@ -83,25 +95,39 @@ export const useDesignFeed = () => {
   }, []);
 
   const refresh = useCallback(() => {
+    console.log("🔄 Manual refresh triggered");
     fetchDesigns(true);
   }, [fetchDesigns]);
 
   const loadMore = useCallback(() => {
-    if (hasReachedEnd || fetchingRef.current) return;
+    if (hasReachedEnd || fetchingRef.current) {
+      console.log("⚠️ Cannot load more - reached end or fetching in progress");
+      return;
+    }
     
     const now = Date.now();
-    if ((now - lastFetchTimeRef.current) < MIN_FETCH_INTERVAL) return;
+    if ((now - lastFetchTimeRef.current) < MIN_FETCH_INTERVAL) {
+      console.log("⏰ Load more throttled");
+      return;
+    }
     
+    console.log("⚠️ Running low on cards, attempting to prefetch...");
     setTimeout(() => {
       if (!fetchingRef.current && !hasReachedEnd) {
+        console.log("🚀 Executing prefetch...");
         fetchDesigns(false);
       }
     }, 1000);
   }, [fetchDesigns, hasReachedEnd]);
 
+  // Only fetch when user is authenticated and not already initialized
   useEffect(() => {
-    fetchDesigns(true);
-  }, []);
+    if (user && !hasInitializedRef.current) {
+      console.log("👤 User authenticated, initializing design feed...");
+      hasInitializedRef.current = true;
+      fetchDesigns(true);
+    }
+  }, [user, fetchDesigns]);
 
   return {
     designs,

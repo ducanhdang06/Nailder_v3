@@ -10,7 +10,7 @@ import { useCallback, useState } from 'react';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { API_BASE_URL } from '../config';
 
-export const useSwipeActions = () => {
+export const useSwipeActions = (totalDesigns = 0) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const postSwipe = useCallback(async (designId, liked) => {
@@ -32,17 +32,23 @@ export const useSwipeActions = () => {
 
       console.log(`💾 Swipe recorded: ${designId} - ${liked ? 'liked' : 'passed'}`);
     } catch (err) {
-      console.error("Failed to record swipe:", err);
+      console.error("❌ Failed to record swipe:", err);
     }
   }, []);
 
   const handleSwipe = useCallback((design, liked, swipeType) => {
     console.log(`${swipeType} on: ${design.title}`);
     postSwipe(design.id, liked);
-    setCurrentIndex(prev => prev + 1);
-  }, [postSwipe]);
+    
+    const newIndex = currentIndex + 1;
+    const remaining = totalDesigns - newIndex;
+    
+    console.log(`📊 ${swipeType} swipe - ${remaining} designs left (index: ${newIndex}/${totalDesigns})`);
+    setCurrentIndex(newIndex);
+  }, [postSwipe, currentIndex, totalDesigns]);
 
   const resetIndex = useCallback(() => {
+    console.log("🔄 Resetting swipe index to 0");
     setCurrentIndex(0);
   }, []);
 

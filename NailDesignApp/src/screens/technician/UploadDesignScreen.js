@@ -16,9 +16,9 @@ import { useFormData } from "../../hooks/useFormData";
 import { useDesignUpload } from "../../hooks/useDesignUpload";
 
 // Components
-import { MainImageSection, ExtraImagesSection } from "../../components/ImageUploadSection";
-import { TitleInput, DescriptionInput } from "../../components/FormInputs";
-import { TagsSection } from "../../components/TagSection";
+import { MainImageSection, ExtraImagesSection } from "../../components/UploadDesign/ImageUploadSection";
+import { TitleInput, DescriptionInput } from "../../components/UploadDesign/FormInputs";
+import { TagsSection } from "../../components/UploadDesign/TagSection";
 
 const UploadDesignScreen = () => {
   // Custom hooks

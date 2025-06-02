@@ -1,13 +1,25 @@
-// screens/customer/CustomerProfile.js
 import React from "react";
 import { Alert } from "react-native";
 import { useUser } from "../../context/userContext";
-import ProfileScreen from "../../components/ProfileScreen";
-import { useSignOut } from "../../utils/useSignOut";
+import ProfileScreen from "../../components/Common/ProfileScreen";
+import { authService } from "../../services/authServices"; // Import authService
 
 export default function CustomerProfile({ navigation }) {
-  const { user } = useUser();
-  const handleSignOut = useSignOut(navigation);
+  const { user, setUser } = useUser(); // Make sure to get setUser from context
+
+  // Enhanced sign out handler using authService
+  const handleSignOut = async () => {
+    const result = await authService.signOutWithNavigation({
+      navigation,
+      setUser,
+      showAlert: true, // This will show error alerts if sign out fails
+    });
+
+    if (!result.success) {
+      console.error("Sign out failed:", result.error);
+      // Error alert is already handled by the authService method
+    }
+  };
 
   const actionItems = [
     {
