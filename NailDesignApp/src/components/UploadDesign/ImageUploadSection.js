@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { authStyles } from '../styles/authStyles';
-import { uploadStyles } from '../styles/uploadStyles';
+import { authStyles } from '../../styles/authStyles';
+import { uploadStyles } from '../../styles/uploadStyles';
 
 export const MainImageSection = ({ mainImage, onPickImage }) => (
   <View style={authStyles.inputContainer}>

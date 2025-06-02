@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import TechnicianNavBar from "../components/nav-bar/TechnicianNavBar";
+import TechnicianNavBar from "../../components/nav-bar/TechnicianNavBar";
 
 // Import your screen components
-import TechnicianHome from "./technician/TechnicianHome";
-import TechnicianChat from "./technician/TechnicianChat";
-import UploadDesignScreen from "./technician/UploadDesignScreen";
-import TechnicianPosted from "./technician/TechnicianPosted";
-import TechnicianProfile from "./technician/TechnicianProfile";
+import TechnicianHome from "../technician/TechnicianHome";
+import TechnicianChat from "../technician/TechnicianChat";
+import UploadDesignScreen from "../technician/UploadDesignScreen";
+import TechnicianPosted from "../technician/TechnicianPosted";
+import TechnicianProfile from "../technician/TechnicianProfile";
 
-import { layoutStyles } from "../styles/layoutStyles";
+import { layoutStyles } from "../../styles/layoutStyles";
 
 const TechnicianLayout = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("home");

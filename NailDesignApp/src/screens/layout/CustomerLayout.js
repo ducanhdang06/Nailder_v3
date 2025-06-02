@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import CustomerNavbar from "../components/nav-bar/CustomerNavBar";
-import { layoutStyles } from "../styles/layoutStyles";
+import CustomerNavbar from "../../components/nav-bar/CustomerNavBar";
+import { layoutStyles } from "../../styles/layoutStyles";
 
-import CustomerChat from "./customer/CustomerChat";
-import CustomerProfile from "./customer/CustomerProfile";
-import CustomerSearch from "./customer/CustomerSearch";
-import CustomerSaved from "./customer/CustomerSaved";
-import SwipeScreen from "./customer/SwipeScreen";
+import CustomerChat from "../customer/CustomerChat";
+import CustomerProfile from "../customer/CustomerProfile";
+import CustomerSearch from "../customer/CustomerSearch";
+import CustomerSaved from "../customer/CustomerSaved";
+import SwipeScreen from "../customer/SwipeScreen";
 
 const CustomerLayout = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("explore");

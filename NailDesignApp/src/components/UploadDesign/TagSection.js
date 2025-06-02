@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { authStyles } from '../styles/authStyles';
-import { uploadStyles } from '../styles/uploadStyles';
+import { authStyles } from '../../styles/authStyles';
+import { uploadStyles } from '../../styles/uploadStyles';
 
 export const TagsSection = ({ 
   tagInput, 

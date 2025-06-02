@@ -1,232 +1,65 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React from "react";
 import {
   View,
   Text,
-  TextInput,
-  Button,
-  Alert,
   TouchableOpacity,
-  StyleSheet,
   SafeAreaView,
-  StatusBar,
-  Dimensions,
-  Image,
-  Platform,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import {
-  signIn,
-  signUp,
-  signOut,
-  getCurrentUser,
-  fetchAuthSession,
-  fetchUserAttributes,
-} from "aws-amplify/auth";
 import { authStyles } from "../../styles/authStyles";
-import GradientButton from "../../components/GradientButton";
-import { API_BASE_URL } from "../../config";
 import { useUser } from "../../context/userContext";
-
-const { width, height } = Dimensions.get("window");
+import { useLoginForm } from "../../hooks/auth/useLoginForm";
+import { useAutoLogin } from "../../hooks/auth/useAutoLogin";
+import { useLoginHandler } from "../../hooks/auth/useLoginHandler";
+import { AuthHeader } from "../../components/Auth/AuthHeader";
+import { LoginForm } from "../../components/Auth/LoginForm";
+import { GradientButton } from "../../components/Auth/GradientButton";
+import { SocialLoginButtons } from "../../components/Auth/SocialLoginButton";
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const {reloadUser} = useUser();
+  const { reloadUser } = useUser();
+  const { formData, setters, validateForm, resetForm } = useLoginForm();
+  const { handleLogin, handleSignOut } = useLoginHandler(navigation, reloadUser);
+  
+  // Auto-login check on mount
+  useAutoLogin(navigation, reloadUser);
 
-  useEffect(() => {
-    const checkExistingSession = async () => {
-      try {
-        const user = await getCurrentUser();
-        const attrs = await fetchUserAttributes();
-        const role = attrs["custom:userType"];
-        const token = (await fetchAuthSession()).tokens?.idToken?.toString();
-
-        await fetch(`${API_BASE_URL}/api/users`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            full_name: attrs.name,
-            email: attrs.email,
-            role: role,
-          }),
-        });
-        await reloadUser();
-        console.log("🟢 Auto-login as:", role);
-
-        if (role === "technician") {
-          navigation.replace("TechnicianHome");
-        } else if (role === "customer") {
-          navigation.replace("CustomerHome");
-        }
-      } catch (err) {
-        console.log("🟡 No active session:", err.name); // Expected if user is not signed in
-      }
-    };
-
-    checkExistingSession();
-  }, []);
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      navigation.replace("Login");
-      console.log("Reset/Logout"); // or navigation.navigate
-    } catch (error) {
-      console.error("Error", error);
-      Alert.alert("Error", "Could not sign out. Please try again.");
-    }
+  const onLoginPress = async () => {
+    if (!validateForm()) return;
+    await handleLogin(formData.email, formData.password);
+    resetForm();
   };
 
-  const handleLogin = async () => {
-    console.log("🧪 Attempting sign in with:", { email, password });
-    try {
-      const user = await signIn({ username: email, password });
-      console.log("✅ Signed in user:", user);
-
-      // get the user attributes
-      const attributes = await fetchUserAttributes();
-      const session = await fetchAuthSession();
-      console.log("🔑 Full Auth Session:", JSON.stringify(session, null, 2));
-
-      const token = (await fetchAuthSession()).tokens?.idToken?.toString();
-      console.log("Token :", token);
-      console.log("API URL: ", API_BASE_URL);
-
-      if (token) {
-        await fetch(`${API_BASE_URL}/api/users`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            full_name: attributes.name,
-            email: attributes.email,
-            role: attributes["custom:userType"],
-          }),
-        });
-      }
-      await reloadUser();
-      const role = attributes["custom:userType"];
-      Alert.alert("Login successful!", `Role: ${role}`);
-      if (role === "Technician" || role === "technician") {
-        navigation.replace("TechnicianHome");
-      } else if (role === "Customer" || role === "customer") {
-        navigation.replace("CustomerHome");
-      } else {
-        Alert.alert("Login successful", `Unknown role: ${role}`);
-      }
-    } catch (err) {
-      console.log("🔍 Full error object:", JSON.stringify(err, null, 2));
-      console.error("Login error name:", err.name);
-      console.error("Login error message:", err.message);
-
-      Alert.alert(
-        "Login failed",
-        `${err.name || "Unknown"}: ${err.message || "Something went wrong"}`
-      );
-    }
+  const handleSocialLogin = (provider) => {
+    console.log(`${provider} login not implemented yet`);
+    // TODO: Implement social login
   };
 
   return (
     <SafeAreaView style={authStyles.safeArea}>
       <View style={authStyles.screenContainer}>
-        <View style={authStyles.header}>
-          <View style={authStyles.logoContainer}>
-            <LinearGradient
-              colors={["#fb7185", "#ec4899"]}
-              style={authStyles.logo}
-            >
-              <View style={authStyles.logoInner} />
-            </LinearGradient>
-          </View>
-          <Text style={authStyles.title}>Welcome Back</Text>
-          <Text style={authStyles.subtitle}>Sign in to your account</Text>
-        </View>
+        <AuthHeader 
+          title="Welcome Back" 
+          subtitle="Sign in to your account" 
+        />
 
         <View style={authStyles.card}>
-          <View style={authStyles.inputContainer}>
-            <Text style={authStyles.label}>Email Address</Text>
-            <TextInput
-              placeholder="your@email.com"
-              value={email}
-              onChangeText={setEmail}
-              placeholderTextColor="#9ca3af"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              style={authStyles.input}
-            />
-          </View>
+          <LoginForm
+            email={formData.email}
+            password={formData.password}
+            onEmailChange={setters.setEmail}
+            onPasswordChange={setters.setPassword}
+            onForgotPassword={() => navigation.navigate("ForgotPassword")}
+          />
 
-          <View style={authStyles.inputContainer}>
-            <View style={authStyles.labelRow}>
-              <Text style={authStyles.label}>Password</Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("ForgotPassword")}
-              >
-                <Text style={authStyles.footerLink}>Forgot Password?</Text>
-              </TouchableOpacity>
-            </View>
-            <TextInput
-              placeholder="Enter your password"
-              value={password}
-              placeholderTextColor="#9ca3af"
-              onChangeText={setPassword}
-              secureTextEntry
-              style={authStyles.input}
-            />
-          </View>
+          <GradientButton 
+            title="Sign In" 
+            onPress={onLoginPress} 
+          />
 
-          <TouchableOpacity
-            style={authStyles.primaryButton}
-            onPress={handleLogin}
-          >
-            <LinearGradient
-              colors={["#fb7185", "#ec4899"]}
-              style={authStyles.buttonGradient}
-            >
-              <Text style={authStyles.primaryButtonText}>Sign In</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-
-          <View style={authStyles.separatorContainer}>
-            <View style={authStyles.separatorLine} />
-            <Text style={authStyles.separatorText}>or</Text>
-            <View style={authStyles.separatorLine} />
-          </View>
-
-          <TouchableOpacity
-            style={authStyles.socialButton}
-            // onPress={handleAppleSignIn}
-          >
-            <Image
-              source={require("../../assets/google-logo.png")} // Transparent background PNG
-              style={authStyles.socialIcon}
-            />
-            <Text style={authStyles.socialButtonText}>
-              Continue with Google
-            </Text>
-          </TouchableOpacity>
-
-          {Platform.OS === "ios" && (
-            <TouchableOpacity
-              style={authStyles.socialButton}
-              // onPress={handleAppleSignIn}
-            >
-              <Image
-                source={require("../../assets/apple-logo.png")}
-                style={authStyles.socialIcon}
-              />
-              <Text style={authStyles.socialButtonText}>
-                Continue with Apple
-              </Text>
-            </TouchableOpacity>
-          )}
+          <SocialLoginButtons
+            onGooglePress={() => handleSocialLogin('Google')}
+            onApplePress={() => handleSocialLogin('Apple')}
+          />
 
           <TouchableOpacity onPress={handleSignOut}>
             <Text style={authStyles.socialButtonText}>Reset Session</Text>
