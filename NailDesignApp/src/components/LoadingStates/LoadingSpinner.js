@@ -10,7 +10,7 @@ import { swipeScreenStyles } from '../../styles/swipeScreenStyles';
 
 export const LoadingSpinner = ({ message = "Loading designs..." }) => (
   <View style={swipeScreenStyles.loadingContainer}>
-    <ActivityIndicator size="large" color="#007AFF" />
+    <ActivityIndicator size="large" color="#fb7185" />
     <Text style={swipeScreenStyles.loadingText}>{message}</Text>
   </View>
 );
