@@ -18,7 +18,7 @@ export const UserProvider = ({ children }) => {
       console.log(userInfo.fullName);
       setUser(userInfo);
     } catch (err) {
-      console.error('❌ Failed to load user:', err);
+      console.error('Failed to load user:', err);
       setUser(null);
     }
   };

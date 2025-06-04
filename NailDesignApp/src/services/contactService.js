@@ -5,14 +5,6 @@ import { fetchAuthSession } from "aws-amplify/auth";
 export const contactService = {
   async contactDesigner(design, navigation) {
     try {
-      console.log("=== CONTACT SERVICE DEBUG ===");
-      console.log("Design object received:", JSON.stringify(design, null, 2));
-      console.log("design.designerId:", design.designerId);
-      console.log("design.technicianId:", design.technicianId);
-      console.log("design.tech_id:", design.tech_id);
-      console.log("design.designerName:", design.designerName);
-      console.log("==============================");
-
       // Get current user ID from auth session
       const session = await fetchAuthSession();
       const customerId = session.tokens?.idToken?.payload?.sub;
@@ -62,7 +54,7 @@ export const contactService = {
         throw new Error("Failed to create chat - no chat ID returned");
       }
     } catch (error) {
-      console.error("❌ Failed to start chat:", error);
+      console.error("Failed to start chat:", error);
       throw error; // Re-throw so the calling function can handle it
     }
   },

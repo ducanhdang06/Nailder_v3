@@ -1,0 +1,125 @@
+import { StyleSheet } from "react-native/types";
+export const ChatScreenStyles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#fff",
+    },
+    loadingText: {
+      textAlign: "center",
+      marginTop: 50,
+      fontSize: 16,
+      color: "#6b7280",
+    },
+    errorContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: 20,
+    },
+    errorText: {
+      fontSize: 16,
+      color: "#ef4444",
+      marginBottom: 10,
+      textAlign: "center",
+    },
+    retryButton: {
+      backgroundColor: "#fb7185",
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderRadius: 12,
+      marginTop: 10,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    retryText: {
+      color: "#fff",
+      fontWeight: "500",
+      fontSize: 16,
+    },
+    messageBubble: {
+      margin: 10,
+      padding: 16,
+      borderRadius: 16,
+      maxWidth: "75%",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 2,
+    },
+    sent: {
+      backgroundColor: "#fb7185",
+      alignSelf: "flex-end",
+    },
+    received: {
+      backgroundColor: "#f9fafb",
+      alignSelf: "flex-start",
+      borderWidth: 1,
+      borderColor: "#e5e7eb",
+    },
+    optimistic: {
+      opacity: 0.7,
+    },
+    messageText: {
+      fontSize: 16,
+      lineHeight: 20,
+      color: "#1f2937",
+    },
+    sentMessageText: {
+      color: "#ffffff",
+    },
+    timeText: {
+      fontSize: 12,
+      color: "#6b7280",
+      marginTop: 4,
+      alignSelf: "flex-end",
+    },
+    sentTimeText: {
+      color: "rgba(255, 255, 255, 0.8)",
+    },
+    inputContainer: {
+      flexDirection: "row",
+      padding: 16,
+      borderTopWidth: 1,
+      borderColor: "#e5e7eb",
+      backgroundColor: "#f9fafb",
+    },
+    input: {
+      flex: 1,
+      borderWidth: 1,
+      borderColor: "#e5e7eb",
+      borderRadius: 20,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      marginRight: 12,
+      backgroundColor: "#fff",
+      maxHeight: 100,
+      fontSize: 16,
+      color: "#1f2937",
+    },
+    sendButton: {
+      backgroundColor: "#fb7185",
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderRadius: 20,
+      justifyContent: "center",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    sendButtonDisabled: {
+      backgroundColor: "#d1d5db",
+    },
+    sendButtonText: {
+      color: "#fff",
+      fontWeight: "500",
+      fontSize: 16,
+    },
+  });
+
+  
