@@ -43,10 +43,23 @@ CREATE TABLE matches (
 
 -- CHAT
 CREATE TABLE chat (
-  id UUID PRIMARY KEY,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   customer_id UUID REFERENCES users(id) ON DELETE CASCADE,
   technician_id UUID REFERENCES users(id) ON DELETE CASCADE,
   design_id UUID REFERENCES designs(id) ON DELETE CASCADE,
-  created_at TIMESTAMP DEFAULT NOW()
+  created_at TIMESTAMP DEFAULT now(),
+  UNIQUE (customer_id, technician_id, design_id)
 );
+
+-- MESSAGES
+CREATE TABLE messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  chat_id UUID REFERENCES chat(id) ON DELETE CASCADE,
+  sender_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  content TEXT,
+  image_url TEXT,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+
 
