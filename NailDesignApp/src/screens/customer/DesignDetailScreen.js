@@ -21,6 +21,13 @@ import { getAllImages } from "../../utils/designHelpers";
 const DesignDetailScreen = ({ route, navigation }) => {
   const { design } = route.params;
   
+  // Debug the design object received from route params
+  console.log("=== DESIGN DETAIL SCREEN DEBUG ===");
+  console.log("Route params:", JSON.stringify(route.params, null, 2));
+  console.log("Design from route:", JSON.stringify(design, null, 2));
+  console.log("Design type:", typeof design);
+  console.log("===================================");
+  
   // Get all images for the gallery
   const allImages = getAllImages(design);
   
