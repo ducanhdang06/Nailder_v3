@@ -18,7 +18,7 @@ export const useUnsaveDesign = (design, navigation) => {
       await savedDesignsApi.unsaveDesign(design.id);
       console.log("✅ Design unsaved:", design.id);
     } catch (error) {
-      console.error("❌ Failed to unsave design:", error);
+      console.error("Failed to unsave design:", error);
       Alert.alert("Error", "Failed to unsave design. Please try again.");
       // Note: The focus effect in CustomerSaved will refetch and show the correct state
     }
