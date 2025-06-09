@@ -19,34 +19,34 @@ import { GET_MESSAGES_BY_CHAT } from "../../graphql/chatQueries";
 import { SEND_MESSAGE } from "../../graphql/mutations";
 import { ChatScreenStyles } from "../../styles/chatScreenStyles";
 
-const ChatScreen = ({ route, navigation }) => {
+const TechnicianChatScreen = ({ route, navigation }) => {
   // ===== GET DATA FROM NAVIGATION =====
-  // When user navigates to this screen, they pass these parameters
-  const { chat_id, technician_id, design, otherUserName, designTitle } = route.params;
+  // When technician navigates to this screen, they pass these parameters
+  const { chat_id, customer_id, design, otherUserName, designTitle } = route.params;
   
   // ===== GET CURRENT USER INFO =====
-  const { user } = useUser(); // Get logged-in user info
-  const userId = user?.sub; // User's unique ID
-  const currentUserRole = user?.role || user?.["custom:userType"]; // customer or technician
+  const { user } = useUser(); // Get logged-in technician info
+  const userId = user?.sub; // Technician's unique ID
+  const currentUserRole = user?.role || user?.["custom:userType"]; // Should be 'technician'
   
   // ===== SETUP APOLLO CLIENT =====
   const client = useApolloClient(); // For GraphQL operations
   
   // ===== LOCAL STATE VARIABLES =====
-  const [messageText, setMessageText] = useState(""); // Text user is typing
+  const [messageText, setMessageText] = useState(""); // Text technician is typing
   const flatListRef = useRef(); // Reference to scroll the message list
   
   // ===== OPTIMISTIC MESSAGES =====
-  // When user sends a message, show it immediately before server confirms
+  // When technician sends a message, show it immediately before server confirms
   // This makes the app feel faster and more responsive
   const [optimisticMessages, setOptimisticMessages] = useState(new Map());
 
   // ===== SECURITY CHECK =====
-  // If user is not logged in, don't let them use chat
+  // If technician is not logged in, don't let them use chat
   if (!user || !userId) {
     return (
       <View style={ChatScreenStyles.errorContainer}>
-        <Text style={ChatScreenStyles.errorText}>User not authenticated</Text>
+        <Text style={ChatScreenStyles.errorText}>Technician not authenticated</Text>
       </View>
     );
   }
@@ -81,11 +81,11 @@ const ChatScreen = ({ route, navigation }) => {
   });
 
   // ===== SETUP USER INFO FOR DISPLAY =====
-  // Information about the person we're chatting with
+  // Information about the customer we're chatting with
   const otherUser = {
-    id: technician_id,
-    fullName: otherUserName || (currentUserRole === "customer" ? "Nail Technician" : "Customer"),
-    email: "contact@nailstudio.com",
+    id: customer_id,
+    fullName: otherUserName || "Customer",
+    email: "customer@nailapp.com",
   };
 
   // ===== SETUP DESIGN INFO FOR DISPLAY =====
@@ -148,7 +148,7 @@ const ChatScreen = ({ route, navigation }) => {
     };
 
     // ===== ADD OPTIMISTIC MESSAGE TO LIST =====
-    // User sees their message right away
+    // Technician sees their message right away
     setOptimisticMessages((prev) => new Map(prev).set(tempId, optimisticMessage));
 
     try {
@@ -258,7 +258,7 @@ const ChatScreen = ({ route, navigation }) => {
       });
 
       // ===== PUT MESSAGE BACK IN INPUT =====
-      // Let user try again
+      // Let technician try again
       setMessageText(messageContent);
     }
   };
@@ -315,12 +315,12 @@ const ChatScreen = ({ route, navigation }) => {
   return (
     <SafeAreaView style={ChatScreenStyles.container}>
       {/* ===== CHAT HEADER ===== */}
-      {/* Shows who you're chatting with and what design */}
+      {/* Shows customer info and what design is being discussed */}
       <ChatHeader
-        onBack={() => navigation.goBack()} // Go back when user taps back button
-        otherUser={otherUser} // Person you're chatting with
+        onBack={() => navigation.goBack()} // Go back when technician taps back button
+        otherUser={otherUser} // Customer they're chatting with
         design={designInfo} // Nail design being discussed
-        currentUserRole={currentUserRole} // Are you customer or technician?
+        currentUserRole={currentUserRole} // This is 'technician'
       />
 
       {/* ===== MESSAGES LIST ===== */}
@@ -329,10 +329,10 @@ const ChatScreen = ({ route, navigation }) => {
         ref={flatListRef} // So we can scroll programmatically
         data={allMessages} // All messages (real + optimistic)
         keyExtractor={(item) => item.id} // Unique ID for each message
-    
+        
         // Render each message
         renderItem={({ item }) => {
-          const isSent = item.sender_id === userId; // Did current user send this?
+          const isSent = item.sender_id === userId; // Did current technician send this?
           const isOptimistic = item.id.startsWith("temp-"); // Is this a temporary message?
 
           return (
@@ -379,14 +379,14 @@ const ChatScreen = ({ route, navigation }) => {
       <View style={ChatScreenStyles.inputContainer}>
         {/* ===== TEXT INPUT BOX ===== */}
         <TextInput
-          value={messageText} // What user has typed
-          onChangeText={setMessageText} // Update when user types
+          value={messageText} // What technician has typed
+          onChangeText={setMessageText} // Update when technician types
           placeholder="Type a message..." // Hint text
           style={ChatScreenStyles.input}
           multiline // Allow multiple lines
           maxLength={1000} // Don't let messages get too long
           returnKeyType="send" // Show "Send" on keyboard
-          onSubmitEditing={handleSend} // Send when user presses Enter
+          onSubmitEditing={handleSend} // Send when technician presses Enter
           blurOnSubmit={false} // Keep keyboard open after sending
         />
         
@@ -409,4 +409,4 @@ const ChatScreen = ({ route, navigation }) => {
   );
 };
 
-export default ChatScreen;
+export default TechnicianChatScreen;
