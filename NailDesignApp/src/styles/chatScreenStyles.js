@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native/types";
+import { StyleSheet } from "react-native";
 export const ChatScreenStyles = StyleSheet.create({
     container: {
       flex: 1,
