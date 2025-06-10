@@ -10,6 +10,7 @@ import CustomerSaved from "../customer/CustomerSaved";
 import SwipeScreen from "../customer/SwipeScreen";
 import DesignDetailScreen from "../customer/DesignDetailScreen";
 import ChatScreen from "../customer/ChatScreen";
+import AllDesignsScreen from "../customer/AllDesignsScreen";
 
 const CustomerLayout = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("explore");
@@ -17,6 +18,7 @@ const CustomerLayout = ({ navigation }) => {
   const [previousScreen, setPreviousScreen] = useState(null);
   const [designDetailData, setDesignDetailData] = useState(null);
   const [chatParams, setChatParams] = useState(null);
+  const [topDesignsData, setTopDesignsData] = useState(null);
   const [scrollSignals, setScrollSignals] = useState({
     SwipeScreen: false,
     CustomerSearch: false,
@@ -50,25 +52,22 @@ const CustomerLayout = ({ navigation }) => {
   };
 
   // Navigation function for DesignDetail
-  const navigateToDesignDetail = (design) => {
-    console.log("=== CUSTOMER LAYOUT NAVIGATE TO DESIGN DETAIL ===");
-    console.log("Design received:", JSON.stringify(design, null, 2));
-    console.log("Design type:", typeof design);
-    console.log("Current screen before navigation:", currentScreen);
-    console.log("=================================================");
-    
+  const navigateToDesignDetail = (design) => {    
     // Remember where we came from
     setPreviousScreen(currentScreen);
     setDesignDetailData(design);
     setCurrentScreen("DesignDetail");
   };
 
-  const navigateToChat = (chatParams) => {
-    console.log("=== CUSTOMER LAYOUT NAVIGATE TO CHAT ===");
-    console.log("Chat params:", JSON.stringify(chatParams, null, 2));
-    console.log("Current screen before navigation:", currentScreen);
-    console.log("========================================");
-    
+  // Navigation function for AllDesignsScreen
+  const navigateToTopDesigns = (params) => {    
+    // Remember where we came from
+    setPreviousScreen(currentScreen);
+    setTopDesignsData(params);
+    setCurrentScreen("AllDesignsScreen");
+  };
+
+  const navigateToChat = (chatParams) => {    
     // Remember where we came from
     setPreviousScreen(currentScreen);
     setChatParams(chatParams);
@@ -86,30 +85,26 @@ const CustomerLayout = ({ navigation }) => {
   // Custom navigation object for compatibility
   const customNavigation = {
     ...navigation,
-    navigate: (screenName, params) => {
-      console.log("=== CUSTOM NAVIGATION CALLED ===");
-      console.log("Screen name:", screenName);
-      console.log("Params:", JSON.stringify(params, null, 2));
-      console.log("================================");
-      
+    navigate: (screenName, params) => {    
       if (screenName === "DesignDetail") {
         navigateToDesignDetail(params.design);
       } else if (screenName === "ChatScreen") {
         navigateToChat(params);
+      } else if (screenName === "AllDesignsScreen") {
+        navigateToTopDesigns(params);
       } else {
         console.log("Fallback to original navigation:", screenName);
         navigation.navigate(screenName, params);
       }
     },
     goBack: () => {
-      console.log("=== CUSTOM NAVIGATION GO BACK ===");
-      console.log("Current screen:", currentScreen);
-      console.log("==================================");
-      
       if (currentScreen === "ChatScreen") {
         closeChat();
       } else if (currentScreen === "DesignDetail") {
         navigateBack();
+      } else if (currentScreen === "AllDesignsScreen") {
+        setCurrentScreen(previousScreen || "CustomerSearch");
+        setPreviousScreen(null);
       } else {
         navigation.goBack();
       }
@@ -196,14 +191,6 @@ const CustomerLayout = ({ navigation }) => {
               : layoutStyles.inactive,
           ]}
         >
-          {(() => {
-            console.log("=== DESIGN DETAIL RENDER CHECK ===");
-            console.log("Current screen:", currentScreen);
-            console.log("designDetailData:", JSON.stringify(designDetailData, null, 2));
-            console.log("designDetailData exists:", !!designDetailData);
-            console.log("==================================");
-            return null;
-          })()}
           {designDetailData && (
             <DesignDetailScreen
               navigation={customNavigation}
@@ -227,10 +214,26 @@ const CustomerLayout = ({ navigation }) => {
             />
           )}
         </View>
+
+        <View
+          style={[
+            layoutStyles.screen,
+            currentScreen === "AllDesignsScreen"
+              ? layoutStyles.active
+              : layoutStyles.inactive,
+          ]}
+        >
+          <AllDesignsScreen
+            navigation={customNavigation}
+            route={{ params: topDesignsData }}
+          />
+        </View>
       </View>
 
-      {/* Hide navbar when viewing design details */}
-      {currentScreen !== "DesignDetail" && currentScreen !== "ChatScreen" && (
+      {/* Hide navbar when viewing design details, chat, or all designs */}
+      {currentScreen !== "DesignDetail" && 
+       currentScreen !== "ChatScreen" && 
+       currentScreen !== "AllDesignsScreen" && (
         <CustomerNavbar activeTab={activeTab} onTabPress={handleTabPress} />
       )}
     </View>

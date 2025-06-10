@@ -42,5 +42,21 @@ export const savedDesignsApi = {
     }
 
     return response.json();
+  },
+
+  async searchFeed(limit = 10) {
+    const token = await getAuthToken();
+  
+    const res = await fetch(`${API_BASE_URL}/api/feed/search-feed?limit=${limit}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+  
+    return res.json();
   }
 };

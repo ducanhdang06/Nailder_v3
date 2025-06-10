@@ -21,15 +21,6 @@ const CustomerChat = ({ navigation }) => {
   const { user } = useUser();
   const userId = user?.sub;
 
-  console.log("=== CUSTOMER CHAT DEBUG ===");
-  console.log("User object:", JSON.stringify(user, null, 2));
-  console.log("User ID:", userId);
-  console.log("User ID type:", typeof userId);
-  console.log("Navigation from prop:", !!navigation);
-  console.log("Navigation keys:", Object.keys(navigation));
-  console.log("Is custom navigation:", navigation.navigate.toString().includes("CUSTOM NAVIGATION"));
-  console.log("===========================");
-
   // Temporarily disable the query until backend resolver is implemented
   const ENABLE_CHAT_QUERY = true; // Set to true once getUserChats resolver is deployed
 
