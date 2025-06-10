@@ -89,4 +89,42 @@ router.get("/saved", verifyToken, async (req, res) => {
   }
 });
 
+router.get("/search-feed", verifyToken, async (req, res) => {
+  const limit = Math.min(Number(req.query.limit) || 10, 50);
+  try {
+    const { rows } = await db.query(
+      `
+      SELECT 
+      d.id, 
+      d.title, 
+      d.description, 
+      d.image_url AS "imageUrl", 
+      d.created_at, 
+      d.likes, 
+      d.tech_id, 
+      u.full_name AS "designerName", 
+      u.email AS "designerEmail", 
+      COALESCE(STRING_AGG(dt.tag, ',' ORDER BY dt.tag), '') AS "tags",
+      COALESCE(
+        ARRAY_AGG(di.image_url ORDER BY di.uploaded_at) FILTER (WHERE di.image_url IS NOT NULL),
+        ARRAY[]::TEXT[]
+      ) AS "extraImages"
+      FROM designs d
+      JOIN users u ON d.tech_id = u.id 
+      LEFT JOIN design_tags dt ON d.id = dt.design_id 
+      LEFT JOIN design_images di ON d.id = di.design_id
+      GROUP BY d.id, u.full_name, u.email
+      ORDER BY d.likes DESC
+      LIMIT $1;
+      `,
+      [limit]
+    );
+    console.log(`Fetched ${limit}) for the search feed`);
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error("Error fetching search feed designs:", err);
+    res.status(500).json({ error: "Failed to fetch unseen designs" });
+  } 
+})
+
 module.exports = router;
