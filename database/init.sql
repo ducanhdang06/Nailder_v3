@@ -61,5 +61,17 @@ CREATE TABLE messages (
   created_at TIMESTAMP DEFAULT now()
 );
 
+-- TECHNICIAN PROFILES
+CREATE TABLE technician_profiles (
+  tech_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  bio TEXT DEFAULT '',
+  phone_number TEXT DEFAULT '',
+  location TEXT DEFAULT '',
+  profile_image_url TEXT DEFAULT '',
+  social_links JSONB DEFAULT '{}',
+  years_experience INT DEFAULT 0,
+  specialties TEXT[] DEFAULT '{}',
+  updated_at TIMESTAMP DEFAULT NOW()
+);
 
 

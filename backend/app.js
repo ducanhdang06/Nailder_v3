@@ -26,6 +26,7 @@ app.use('/api/feed', require('./routes/feed'));
 app.use('/api/matches', require('./routes/matches'));
 // app.use('/api/chat', require('./routes/chat'));
 app.use("/api/designs", require("./routes/designs"));
+app.use("/api/profile", require("./routes/profile"));
 
 app.get("/", (req, res) => {
   res.send("✅ Server is up and running!");
