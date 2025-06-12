@@ -16,109 +16,24 @@ import { useUser } from "../../context/userContext";
 import { authStyles } from "../../styles/authStyles";
 import { uploadStyles } from "../../styles/uploadStyles";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTechnicianProfile } from "../../context/technicianProfileContext";
+import {
+  SOCIAL_PLATFORMS,
+  PLATFORM_URLS,
+} from "../../constants/socialPlatforms";
+import { Linking } from "react-native";
+import { formatTimeAgo } from "../../utils/formatTimeAgo";
 
 const TechnicianHome = ({ navigation }) => {
+  const { profile, isLoading } = useTechnicianProfile();
   const { user } = useUser();
-  const [isLoading, setIsLoading] = useState(false);
-  const [profileData, setProfileData] = useState({
-    profileImage: 'https://images.unsplash.com/photo-1494790108755-2616b6e59caf?w=400&h=400&fit=crop',
-    fullName: user?.name || 'Sarah Johnson',
-    bio: 'Passionate nail artist with 5+ years of experience. Specializing in intricate designs, gel extensions, and nail art. Creating beautiful nails is my art! ✨',
-    location: 'Beverly Hills, CA',
-    phone: '+1 (555) 123-4567',
-    instagram: '@sarahnails_artist',
-    tiktok: '@sarahjnails',
-    totalLikes: 12847,
-    totalDesigns: 156,
-    yearsExperience: 5,
-    totalClients: 487
-  });
-
-  const [topDesigns, setTopDesigns] = useState([
-    {
-      id: '1',
-      title: 'Elegant French Ombré',
-      imageUrl: 'https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=400&h=400&fit=crop',
-      likes: 2247,
-    },
-    {
-      id: '2',
-      title: 'Holographic Chrome',
-      imageUrl: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop',
-      likes: 1987,
-    },
-    {
-      id: '3',
-      title: 'Floral Garden Art',
-      imageUrl: 'https://images.unsplash.com/photo-1610992015732-2449b76344bc?w=400&h=400&fit=crop',
-      likes: 1856,
-    }
-  ]);
-
-  const [recentDesigns, setRecentDesigns] = useState([
-    {
-      id: '4',
-      title: 'Minimalist Line Art',
-      imageUrl: 'https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=400&h=300&fit=crop',
-      likes: 432,
-      createdAt: '2 days ago'
-    },
-    {
-      id: '5',
-      title: 'Sunset Gradient',
-      imageUrl: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=300&fit=crop',
-      likes: 289,
-      createdAt: '4 days ago'
-    }
-  ]);
-
-  const handleSignOut = async () => {
-    Alert.alert(
-      "Sign Out",
-      "Are you sure you want to sign out?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Sign Out",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              setIsLoading(true);
-              await signOut();
-              navigation.replace("Login");
-            } catch (error) {
-              console.error("Sign out error:", error);
-              Alert.alert("Error", "Could not sign out. Please try again.");
-            } finally {
-              setIsLoading(false);
-            }
-          }
-        }
-      ]
-    );
-  };
+  const avatarUrl =
+  !profile?.profile_image_url
+    ? `https://avatar.iran.liara.run/username?username=${profile.full_name || "unknown"}`
+    : profile.profile_image_url;
 
   const handleEditProfile = () => {
-    navigation.navigate("EditProfile", { profileData });
-  };
-
-  const handleEditPhoto = () => {
-    Alert.alert(
-      "Change Profile Photo",
-      "Choose an option",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Camera", onPress: () => console.log("Open camera") },
-        { text: "Gallery", onPress: () => console.log("Open gallery") }
-      ]
-    );
-  };
-
-  const handleEditSocials = () => {
-    navigation.navigate("EditSocials", { 
-      instagram: profileData.instagram,
-      tiktok: profileData.tiktok 
-    });
+    navigation.navigate("EditProfile", { profile });
   };
 
   const handleDesignPress = (design) => {
@@ -130,7 +45,7 @@ const TechnicianHome = ({ navigation }) => {
       style={styles.topDesignCard}
       onPress={() => handleDesignPress(item)}
     >
-      <Image source={{ uri: item.imageUrl }} style={styles.topDesignImage} />
+      <Image source={{ uri: item.image_url }} style={styles.topDesignImage} />
       <View style={styles.topDesignRank}>
         <Text style={styles.topDesignRankText}>#{index + 1}</Text>
       </View>
@@ -151,7 +66,10 @@ const TechnicianHome = ({ navigation }) => {
       style={styles.recentDesignCard}
       onPress={() => handleDesignPress(item)}
     >
-      <Image source={{ uri: item.imageUrl }} style={styles.recentDesignImage} />
+      <Image
+        source={{ uri: item.image_url }}
+        style={styles.recentDesignImage}
+      />
       <View style={styles.recentDesignInfo}>
         <Text style={styles.recentDesignTitle} numberOfLines={2}>
           {item.title}
@@ -174,7 +92,7 @@ const TechnicianHome = ({ navigation }) => {
         <Text style={styles.headerTitle}>My Profile</Text>
         <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
           <LinearGradient
-            colors={['#fb7185', '#f472b6']}
+            colors={["#fb7185", "#f472b6"]}
             style={styles.editButtonGradient}
           >
             <Text style={styles.editButtonText}>Edit Profile</Text>
@@ -182,40 +100,35 @@ const TechnicianHome = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView 
-        style={styles.container}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Profile Section */}
         <View style={styles.profileSection}>
           <View style={styles.profileImageContainer}>
-            <Image 
-              source={{ uri: profileData.profileImage }} 
-              style={styles.profileImage} 
+            <Image
+              source={{uri: avatarUrl}}
+              style={styles.profileImage}
             />
-            <TouchableOpacity 
-              style={styles.editPhotoButton}
-              onPress={handleEditPhoto}
-            >
-              <Text style={styles.editPhotoIcon}>📷</Text>
-            </TouchableOpacity>
           </View>
 
-          <Text style={styles.fullName}>{profileData.fullName}</Text>
-          
+          <Text style={styles.fullName}>{profile?.full_name}</Text>
+
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{profileData.totalLikes.toLocaleString()}</Text>
+              <Text style={styles.statNumber}>
+                {profile?.total_likes.toLocaleString()}
+              </Text>
               <Text style={styles.statLabel}>Total Likes</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{profileData.totalClients}</Text>
-              <Text style={styles.statLabel}>Clients Served</Text>
+              <Text style={styles.statNumber}>{profile?.total_designs}</Text>
+              <Text style={styles.statLabel}>Posted Designs</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{profileData.yearsExperience}+</Text>
+              <Text style={styles.statNumber}>
+                {profile?.years_experience}+
+              </Text>
               <Text style={styles.statLabel}>Years Exp.</Text>
             </View>
           </View>
@@ -224,42 +137,75 @@ const TechnicianHome = ({ navigation }) => {
         {/* Bio Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>About Me</Text>
-          <Text style={styles.bioText}>{profileData.bio}</Text>
+          <Text style={styles.bioText}>{profile.bio ? profile.bio : "This technician hasn't added a bio yet."}</Text>
         </View>
+
+        {/* Specialties Section */}
+        {profile?.specialties && profile.specialties.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>✨ My Specialties</Text>
+            <View style={styles.specialtiesContainer}>
+              {profile.specialties.map((specialty, index) => (
+                <View key={specialty} style={styles.specialtyChip}>
+                  <LinearGradient
+                    colors={["#fb7185", "#f472b6"]}
+                    style={styles.specialtyGradient}
+                  >
+                    <Text style={styles.specialtyText}>{specialty}</Text>
+                  </LinearGradient>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
 
         {/* Contact Info Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Contact Information</Text>
           <View style={styles.contactItem}>
             <Text style={styles.contactIcon}>📍</Text>
-            <Text style={styles.contactText}>{profileData.location}</Text>
+            <Text style={styles.contactText}>{profile.location ? profile.location : "Location not provided"}</Text>
           </View>
           <View style={styles.contactItem}>
             <Text style={styles.contactIcon}>📞</Text>
-            <Text style={styles.contactText}>{profileData.phone}</Text>
+            <Text style={styles.contactText}>{profile.phone_number ? profile.phone_number : "Phone number not provided"}</Text>
           </View>
         </View>
 
         {/* Social Links Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Social Media</Text>
-          <View style={styles.socialLinks}>
-            <View style={styles.socialItem}>
-              <Text style={styles.socialIcon}>📷</Text>
-              <Text style={styles.socialText}>{profileData.instagram}</Text>
+        {profile?.social_links &&
+          Object.keys(profile.social_links).length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Social Media</Text>
+              <View style={styles.socialLinks}>
+                {Object.entries(SOCIAL_PLATFORMS).map(([platform, icon]) => {
+                  const link = profile.social_links[platform];
+                  if (!link) return null;
+
+                  const url =
+                    PLATFORM_URLS[platform]?.(link) ||
+                    `https://${link.replace("@", "")}`;
+
+                  return (
+                    <TouchableOpacity
+                      key={platform}
+                      style={styles.socialItem}
+                      onPress={() => Linking.openURL(url)}
+                    >
+                      <Text style={styles.socialIcon}>{icon}</Text>
+                      <Text style={styles.socialText}>{link}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
             </View>
-            <View style={styles.socialItem}>
-              <Text style={styles.socialIcon}>🎵</Text>
-              <Text style={styles.socialText}>{profileData.tiktok}</Text>
-            </View>
-          </View>
-        </View>
+          )}
 
         {/* Top Designs Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>✨ Most Loved Designs</Text>
           <FlatList
-            data={topDesigns}
+            data={profile?.top_liked_designs || []}
             keyExtractor={(item) => item.id}
             renderItem={renderTopDesign}
             horizontal
@@ -272,12 +218,19 @@ const TechnicianHome = ({ navigation }) => {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>🔥 Recent Uploads</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("MyDesigns", { sortBy: "recent" })}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("MyDesigns", { sortBy: "recent" })
+              }
+            >
               <Text style={styles.editLink}>See All</Text>
             </TouchableOpacity>
           </View>
           <FlatList
-            data={recentDesigns}
+            data={(profile?.recent_designs || []).map((design) => ({
+              ...design,
+              createdAt: formatTimeAgo(design.created_at),
+            }))}
             keyExtractor={(item) => item.id}
             renderItem={renderRecentDesign}
             horizontal
@@ -562,6 +515,40 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: "#9ca3af",
     fontWeight: "500",
+  },
+  specialtiesContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 12,
+    marginTop: 4,
+  },
+  specialtyChip: {
+    flex: 1,
+    maxWidth: "30%",
+    borderRadius: 24,
+    overflow: "hidden",
+    shadowColor: "#fb7185",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  specialtyGradient: {
+    paddingHorizontal: 12,
+    paddingVertical: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 48,
+  },
+  specialtyText: {
+    fontSize: 12,
+    color: "#fff",
+    fontWeight: "700",
+    textAlign: "center",
+    letterSpacing: 0.3,
+    lineHeight: 16,
+    numberOfLines: 2,
   },
 });
 

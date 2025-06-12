@@ -5,14 +5,17 @@ import AppNavigator from "./src/navigation/AppNavigator";
 import { UserProvider } from "./src/context/userContext";
 import client from "./src/graphql/apolloClient";
 import { ApolloProvider } from "@apollo/client";
+import { TechnicianProfileProvider } from "./src/context/technicianProfileContext";
 
 export default function App() {
   return (
     <ApolloProvider client={client}>
       <UserProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <AppNavigator />
-        </GestureHandlerRootView>
+        <TechnicianProfileProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <AppNavigator />
+          </GestureHandlerRootView>
+        </TechnicianProfileProvider>
       </UserProvider>
     </ApolloProvider>
   );
