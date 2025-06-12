@@ -97,6 +97,7 @@ export default function TechnicianPosted(props) {
           />
         )}
       </View>
+      <View style={{ height: 40 }} />
     </SafeAreaView>
   );
 }

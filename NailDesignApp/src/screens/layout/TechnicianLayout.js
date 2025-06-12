@@ -9,6 +9,7 @@ import UploadDesignScreen from "../technician/UploadDesignScreen";
 import TechnicianPosted from "../technician/TechnicianPosted";
 import TechnicianProfile from "../technician/TechnicianProfile";
 import TechnicianChatScreen from "../technician/TechnicianChatScreen";
+import EditProfile from "../technician/EditProfile";
 
 import { layoutStyles } from "../../styles/layoutStyles";
 
@@ -17,6 +18,7 @@ const TechnicianLayout = ({ navigation }) => {
   const [currentScreen, setCurrentScreen] = useState("TechnicianHome");
   const [previousScreen, setPreviousScreen] = useState(null);
   const [chatParams, setChatParams] = useState(null);
+  const [editProfileParams, setEditProfileParams] = useState(null);
   const [scrollSignals, setScrollSignals] = useState({
     TechnicianHome: false,
     TechnicianPosted: false,
@@ -50,9 +52,27 @@ const TechnicianLayout = ({ navigation }) => {
     setCurrentScreen("TechnicianChatScreen");
   };
 
+  const navigateToEditProfile = (profileParams) => {
+    console.log("=== TECHNICIAN LAYOUT NAVIGATE TO EDIT PROFILE ===");
+    console.log("Profile params:", JSON.stringify(profileParams, null, 2));
+    console.log("Current screen before navigation:", currentScreen);
+    console.log("===================================================");
+    
+    // Remember where we came from
+    setPreviousScreen(currentScreen);
+    setEditProfileParams(profileParams);
+    setCurrentScreen("EditProfile");
+  };
+
   const closeChat = () => {
     setChatParams(null);
     setCurrentScreen(previousScreen || "TechnicianChat");
+    setPreviousScreen(null);
+  };
+
+  const closeEditProfile = () => {
+    setEditProfileParams(null);
+    setCurrentScreen(previousScreen || "TechnicianHome");
     setPreviousScreen(null);
   };
 
@@ -67,6 +87,8 @@ const TechnicianLayout = ({ navigation }) => {
       
       if (screenName === "TechnicianChatScreen") {
         navigateToChat(params);
+      } else if (screenName === "EditProfile") {
+        navigateToEditProfile(params);
       } else {
         console.log("Fallback to original navigation:", screenName);
         navigation.navigate(screenName, params);
@@ -79,6 +101,8 @@ const TechnicianLayout = ({ navigation }) => {
       
       if (currentScreen === "TechnicianChatScreen") {
         closeChat();
+      } else if (currentScreen === "EditProfile") {
+        closeEditProfile();
       } else {
         navigation.goBack();
       }
@@ -172,10 +196,27 @@ const TechnicianLayout = ({ navigation }) => {
             />
           )}
         </View>
+
+        {/* EditProfile Screen */}
+        <View
+          style={[
+            layoutStyles.screen,
+            currentScreen === "EditProfile"
+              ? layoutStyles.active
+              : layoutStyles.inactive,
+          ]}
+        >
+          {editProfileParams && (
+            <EditProfile
+              navigation={customNavigation}
+              route={{ params: editProfileParams }}
+            />
+          )}
+        </View>
       </View>
 
-      {/* Hide navbar when viewing chat screen */}
-      {currentScreen !== "TechnicianChatScreen" && (
+      {/* Hide navbar when viewing chat screen or edit profile */}
+      {currentScreen !== "TechnicianChatScreen" && currentScreen !== "EditProfile" && (
         <TechnicianNavBar activeTab={activeTab} onTabPress={handleTabPress} />
       )}
     </View>
