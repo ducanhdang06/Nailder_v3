@@ -87,7 +87,7 @@ router.get("/:techId", verifyToken, async (req, res) => {
     if (rows.length === 0) {
       return res.status(404).json({ error: "Technician not found" });
     }
-
+    console.log("FOUNDDDDD", rows[0]);
     res.json(rows[0]);
   } catch (err) {
     console.error("Error fetching technician profile:", err);
