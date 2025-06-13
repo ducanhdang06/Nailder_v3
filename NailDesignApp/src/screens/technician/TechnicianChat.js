@@ -296,6 +296,9 @@ const TechnicianChat = ({ navigation }) => {
           />
         )}
       </View>
+      
+      {/* Bottom spacing */}
+      <View style={{ height: 40 }} />
     </SafeAreaView>
   );
 };

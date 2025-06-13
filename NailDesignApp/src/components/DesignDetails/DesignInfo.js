@@ -1,20 +1,27 @@
 // screens/DesignDetail/components/DesignInfo.js
-import React from 'react';
-import { View, Text } from 'react-native';
-import { detailsStyles } from '../../styles/detailsStyles';
-import { getDesignerInitials } from '../../utils/swipeHelpers';
-import { 
-  parseTags, 
-  formatCreationDate, 
-  getDesignerDisplayName, 
-  getDesignTitle 
-} from '../../utils/designHelpers';
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { detailsStyles } from "../../styles/detailsStyles";
+import { getDesignerInitials } from "../../utils/swipeHelpers";
+import {
+  parseTags,
+  formatCreationDate,
+  getDesignerDisplayName,
+  getDesignTitle,
+} from "../../utils/designHelpers";
 
-const DesignInfo = ({ design }) => {
+const DesignInfo = ({ design, navigation }) => {
   const tags = parseTags(design.tags);
   const formattedDate = formatCreationDate(design.created_at);
   const designerName = getDesignerDisplayName(design.designerName);
   const title = getDesignTitle(design.title);
+
+  const handleDesignerPress = () => {
+    const technicianId = design.tech_id;
+    navigation.navigate("TechnicianInfo", {
+      technicianId: technicianId,
+    });
+  };
 
   return (
     <View style={detailsStyles.infoSection}>
@@ -29,19 +36,35 @@ const DesignInfo = ({ design }) => {
 
       {/* Designer Info */}
       <View style={detailsStyles.designerSection}>
-        <View style={detailsStyles.designerRow}>
+        <TouchableOpacity
+          style={detailsStyles.designerRow}
+          onPress={handleDesignerPress}
+          activeOpacity={0.7}
+        >
           <View style={detailsStyles.designerAvatar}>
             <Text style={detailsStyles.avatarText}>
               {getDesignerInitials(designerName)}
             </Text>
           </View>
           <View style={detailsStyles.designerInfo}>
-            <Text style={detailsStyles.designerName}>{designerName}</Text>
+            <Text
+              style={[
+                detailsStyles.designerName,
+                detailsStyles.clickableDesignerName,
+              ]}
+            >
+              {designerName}
+            </Text>
             {design.designerEmail && (
-              <Text style={detailsStyles.designerEmail}>{design.designerEmail}</Text>
+              <Text style={detailsStyles.designerEmail}>
+                {design.designerEmail}
+              </Text>
             )}
           </View>
-        </View>
+          <View style={detailsStyles.chevronContainer}>
+            <Text style={detailsStyles.chevron}>›</Text>
+          </View>
+        </TouchableOpacity>
       </View>
 
       {/* Description */}

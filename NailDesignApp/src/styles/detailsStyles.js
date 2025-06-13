@@ -148,6 +148,19 @@ export const detailsStyles = StyleSheet.create({
       color: '#111827',
       marginBottom: 2,
     },
+    clickableDesignerName: {
+      color: '#fb7185',
+    },
+    chevronContainer: {
+      marginLeft: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    chevron: {
+      fontSize: 20,
+      color: '#9ca3af',
+      fontWeight: '300',
+    },
     designerEmail: {
       fontSize: 14,
       color: '#6b7280',

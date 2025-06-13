@@ -11,14 +11,16 @@ import SwipeScreen from "../customer/SwipeScreen";
 import DesignDetailScreen from "../customer/DesignDetailScreen";
 import ChatScreen from "../customer/ChatScreen";
 import AllDesignsScreen from "../customer/AllDesignsScreen";
+import TechnicianInfo from "../customer/TechnicianInfo";
 
 const CustomerLayout = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("explore");
   const [currentScreen, setCurrentScreen] = useState("SwipeScreen");
-  const [previousScreen, setPreviousScreen] = useState(null);
+  const [navigationStack, setNavigationStack] = useState([]);
   const [designDetailData, setDesignDetailData] = useState(null);
   const [chatParams, setChatParams] = useState(null);
   const [topDesignsData, setTopDesignsData] = useState(null);
+  const [technicianInfoData, setTechnicianInfoData] = useState(null);
   const [scrollSignals, setScrollSignals] = useState({
     SwipeScreen: false,
     CustomerSearch: false,
@@ -34,8 +36,13 @@ const CustomerLayout = ({ navigation }) => {
 
   const closeChat = () => {
     setChatParams(null);
-    setCurrentScreen(previousScreen || "CustomerSaved");
-    setPreviousScreen(null);
+    if (navigationStack.length > 0) {
+      const lastEntry = navigationStack[navigationStack.length - 1];
+      setCurrentScreen(lastEntry.screen);
+      setNavigationStack([]);
+    } else {
+      setCurrentScreen("CustomerSaved");
+    }
   };
 
   const handleTabPress = (screen, tabId) => {
@@ -47,39 +54,104 @@ const CustomerLayout = ({ navigation }) => {
       }));
     } else {
       setCurrentScreen(screen);
+      setNavigationStack([]); // Clear navigation stack when switching tabs
+      // Clear all data when switching tabs
+      setDesignDetailData(null);
+      setTechnicianInfoData(null);
+      setTopDesignsData(null);
+      setChatParams(null);
     }
     setActiveTab(tabId);
   };
 
   // Navigation function for DesignDetail
   const navigateToDesignDetail = (design) => {    
-    // Remember where we came from
-    setPreviousScreen(currentScreen);
+    // Add current screen and its data to navigation stack
+    const stackEntry = {
+      screen: currentScreen,
+      data: {
+        designDetailData: currentScreen === "DesignDetail" ? designDetailData : null,
+        technicianInfoData: currentScreen === "TechnicianInfo" ? technicianInfoData : null,
+        topDesignsData: currentScreen === "AllDesignsScreen" ? topDesignsData : null,
+        chatParams: currentScreen === "ChatScreen" ? chatParams : null,
+      }
+    };
+    setNavigationStack(prev => [...prev, stackEntry]);
     setDesignDetailData(design);
     setCurrentScreen("DesignDetail");
   };
 
   // Navigation function for AllDesignsScreen
   const navigateToTopDesigns = (params) => {    
-    // Remember where we came from
-    setPreviousScreen(currentScreen);
+    // Add current screen and its data to navigation stack
+    const stackEntry = {
+      screen: currentScreen,
+      data: {
+        designDetailData: currentScreen === "DesignDetail" ? designDetailData : null,
+        technicianInfoData: currentScreen === "TechnicianInfo" ? technicianInfoData : null,
+        topDesignsData: currentScreen === "AllDesignsScreen" ? topDesignsData : null,
+        chatParams: currentScreen === "ChatScreen" ? chatParams : null,
+      }
+    };
+    setNavigationStack(prev => [...prev, stackEntry]);
     setTopDesignsData(params);
     setCurrentScreen("AllDesignsScreen");
   };
 
+  // Navigation function for TechnicianInfo
+  const navigateToTechnicianInfo = (params) => {    
+    // Add current screen and its data to navigation stack
+    const stackEntry = {
+      screen: currentScreen,
+      data: {
+        designDetailData: currentScreen === "DesignDetail" ? designDetailData : null,
+        technicianInfoData: currentScreen === "TechnicianInfo" ? technicianInfoData : null,
+        topDesignsData: currentScreen === "AllDesignsScreen" ? topDesignsData : null,
+        chatParams: currentScreen === "ChatScreen" ? chatParams : null,
+      }
+    };
+    setNavigationStack(prev => [...prev, stackEntry]);
+    setTechnicianInfoData(params);
+    setCurrentScreen("TechnicianInfo");
+  };
+
   const navigateToChat = (chatParams) => {    
-    // Remember where we came from
-    setPreviousScreen(currentScreen);
+    // Add current screen and its data to navigation stack
+    const stackEntry = {
+      screen: currentScreen,
+      data: {
+        designDetailData: currentScreen === "DesignDetail" ? designDetailData : null,
+        technicianInfoData: currentScreen === "TechnicianInfo" ? technicianInfoData : null,
+        topDesignsData: currentScreen === "AllDesignsScreen" ? topDesignsData : null,
+        chatParams: currentScreen === "ChatScreen" ? chatParams : null,
+      }
+    };
+    setNavigationStack(prev => [...prev, stackEntry]);
     setChatParams(chatParams);
     setCurrentScreen("ChatScreen");
   };
 
-  // Back navigation from DesignDetail
+  // Back navigation - pop from stack and restore data
   const navigateBack = () => {
-    // Go back to the previous screen or default to CustomerSaved
-    setCurrentScreen(previousScreen || "CustomerSaved");
-    setDesignDetailData(null);
-    setPreviousScreen(null); // Reset previous screen
+    if (navigationStack.length > 0) {
+      const lastEntry = navigationStack[navigationStack.length - 1];
+      setNavigationStack(prev => prev.slice(0, -1)); // Remove last item from stack
+      setCurrentScreen(lastEntry.screen);
+      
+      // Restore the data for the screen we're going back to
+      setDesignDetailData(lastEntry.data.designDetailData);
+      setTechnicianInfoData(lastEntry.data.technicianInfoData);
+      setTopDesignsData(lastEntry.data.topDesignsData);
+      setChatParams(lastEntry.data.chatParams);
+    } else {
+      // Fallback to a default screen if stack is empty
+      setCurrentScreen("CustomerSaved");
+      // Clear all data
+      setDesignDetailData(null);
+      setTechnicianInfoData(null);
+      setTopDesignsData(null);
+      setChatParams(null);
+    }
   };
 
   // Custom navigation object for compatibility
@@ -92,6 +164,8 @@ const CustomerLayout = ({ navigation }) => {
         navigateToChat(params);
       } else if (screenName === "AllDesignsScreen") {
         navigateToTopDesigns(params);
+      } else if (screenName === "TechnicianInfo") {
+        navigateToTechnicianInfo(params);
       } else {
         console.log("Fallback to original navigation:", screenName);
         navigation.navigate(screenName, params);
@@ -100,11 +174,12 @@ const CustomerLayout = ({ navigation }) => {
     goBack: () => {
       if (currentScreen === "ChatScreen") {
         closeChat();
-      } else if (currentScreen === "DesignDetail") {
+      } else if (
+        currentScreen === "DesignDetail" || 
+        currentScreen === "AllDesignsScreen" || 
+        currentScreen === "TechnicianInfo"
+      ) {
         navigateBack();
-      } else if (currentScreen === "AllDesignsScreen") {
-        setCurrentScreen(previousScreen || "CustomerSearch");
-        setPreviousScreen(null);
       } else {
         navigation.goBack();
       }
@@ -228,12 +303,29 @@ const CustomerLayout = ({ navigation }) => {
             route={{ params: topDesignsData }}
           />
         </View>
+
+        <View
+          style={[
+            layoutStyles.screen,
+            currentScreen === "TechnicianInfo"
+              ? layoutStyles.active
+              : layoutStyles.inactive,
+          ]}
+        >
+          {technicianInfoData && (
+            <TechnicianInfo
+              navigation={customNavigation}
+              route={{ params: technicianInfoData }}
+            />
+          )}
+        </View>
       </View>
 
-      {/* Hide navbar when viewing design details, chat, or all designs */}
+      {/* Hide navbar when viewing design details, chat, all designs, or technician info */}
       {currentScreen !== "DesignDetail" && 
        currentScreen !== "ChatScreen" && 
-       currentScreen !== "AllDesignsScreen" && (
+       currentScreen !== "AllDesignsScreen" && 
+       currentScreen !== "TechnicianInfo" && (
         <CustomerNavbar activeTab={activeTab} onTabPress={handleTabPress} />
       )}
     </View>

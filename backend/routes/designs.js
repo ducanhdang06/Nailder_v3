@@ -97,6 +97,55 @@ router.get('/mine', verifyToken, async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch your designs' });
     }
   });
+
+  router.get("/:designId", verifyToken, async (req, res) => {
+    const designId = req.params.designId;
+    const userId = req.user.sub; // from JWT token
+    const client = await db.connect();
+  
+    const query = `
+    SELECT 
+  d.id, 
+  d.title, 
+  d.description, 
+  d.image_url AS "imageUrl", 
+  d.created_at, 
+  d.likes, 
+  d.tech_id, 
+  u.full_name AS "designerName", 
+  u.email AS "designerEmail", 
+  COALESCE(
+    STRING_AGG(dt.tag, ',' ORDER BY dt.tag), 
+    ''
+  ) AS "tags",
+  COALESCE(
+    ARRAY_AGG(di.image_url ORDER BY di.uploaded_at) 
+    FILTER (WHERE di.image_url IS NOT NULL),
+    ARRAY[]::TEXT[]
+  ) AS "extraImages"
+FROM designs d 
+JOIN users u ON d.tech_id = u.id 
+LEFT JOIN design_tags dt ON d.id = dt.design_id 
+LEFT JOIN design_images di ON d.id = di.design_id
+WHERE d.id = $1
+GROUP BY d.id, u.full_name, u.email; 
+    `;
+  
+    try {
+      const { rows } = await client.query(query, [designId]);
+  
+      if (rows.length === 0) {
+        return res.status(404).json({ error: "Design not found" });
+      }
+  
+      res.json(rows[0]);
+    } catch (err) {
+      console.error("Error fetching design with liked status:", err);
+      res.status(500).json({ error: "Server error" });
+    } finally {
+      client.release();
+    }
+  });
   
 
 module.exports = router;

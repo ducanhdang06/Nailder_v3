@@ -90,11 +90,28 @@ const EditProfile = ({ navigation }) => {
 
   const toggleSpecialty = (specialty) => {
     const newSelected = new Set(selectedSpecialties);
-    newSelected.has(specialty)
-      ? newSelected.delete(specialty)
-      : newSelected.add(specialty);
+    
+    if (newSelected.has(specialty)) {
+      // Removing a specialty
+      newSelected.delete(specialty);
+    } else {
+      // Adding a specialty - check the limit
+      if (newSelected.size >= 3) {
+        Alert.alert(
+          "Maximum Reached", 
+          "You can select up to 3 specialties only. Please remove one to add another.",
+          [{ text: "OK" }]
+        );
+        return;
+      }
+      newSelected.add(specialty);
+    }
+    
     setSelectedSpecialties(newSelected);
-    setFormData((prev) => ({ ...prev, specialties: Array.from(newSelected) }));
+    setFormData(prev => ({
+      ...prev,
+      specialties: Array.from(newSelected)
+    }));
   };
 
   const pickImage = async () => {
@@ -105,7 +122,7 @@ const EditProfile = ({ navigation }) => {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: [ImagePicker.MediaType.IMAGE],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
@@ -187,19 +204,24 @@ const EditProfile = ({ navigation }) => {
 
   const renderSpecialtyChip = (specialty) => {
     const isSelected = selectedSpecialties.has(specialty);
+    const isDisabled = !isSelected && selectedSpecialties.size >= 3;
+    
     return (
       <TouchableOpacity
         key={specialty}
         style={[
           styles.specialtyChip,
           isSelected && styles.specialtyChipSelected,
+          isDisabled && styles.specialtyChipDisabled,
         ]}
         onPress={() => toggleSpecialty(specialty)}
+        disabled={isDisabled}
       >
         <Text
           style={[
             styles.specialtyChipText,
             isSelected && styles.specialtyChipTextSelected,
+            isDisabled && styles.specialtyChipTextDisabled,
           ]}
         >
           {specialty}
@@ -354,7 +376,7 @@ const EditProfile = ({ navigation }) => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Specialties</Text>
             <Text style={styles.sectionSubtitle}>
-              Select the nail services you specialize in
+              Select up to 3 nail services you specialize in ({selectedSpecialties.size}/3)
             </Text>
             <View style={styles.specialtiesContainer}>
               {SPECIALTY_OPTIONS.map(renderSpecialtyChip)}
@@ -504,6 +526,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fef3f4",
     borderColor: "#fb7185",
   },
+  specialtyChipDisabled: {
+    backgroundColor: "#f3f4f6",
+    borderColor: "#e5e7eb",
+    opacity: 0.5,
+  },
   specialtyChipText: {
     fontSize: 14,
     color: "#6b7280",
@@ -512,6 +539,10 @@ const styles = StyleSheet.create({
   specialtyChipTextSelected: {
     color: "#fb7185",
     fontWeight: "600",
+  },
+  specialtyChipTextDisabled: {
+    color: "#9ca3af",
+    fontWeight: "400",
   },
 });
 

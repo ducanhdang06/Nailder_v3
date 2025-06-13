@@ -9,11 +9,6 @@ export function formatTimeAgo(dateString) {
   const date = new Date(dateString);
   const now = new Date();
 
-  console.log("Original dateString:", dateString);
-  console.log("Parsed date:", date);
-  console.log("Current time:", now);
-  console.log("Difference in minutes:", differenceInMinutes(now, date));
-
   const minutes = differenceInMinutes(now, date);
   if (minutes < 1) return "just now";
   if (minutes < 60) return `${minutes} min${minutes > 1 ? "s" : ""} ago`;
