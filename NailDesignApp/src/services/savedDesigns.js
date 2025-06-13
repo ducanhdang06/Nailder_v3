@@ -58,5 +58,23 @@ export const savedDesignsApi = {
     }
   
     return res.json();
-  }
+  },
+
+  async fetchDesignDetail(designId) {
+    const token = (await fetchAuthSession()).tokens?.idToken?.toString();
+
+    const response = await fetch(`${API_BASE_URL}/api/designs/${designId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch design detail");
+    }
+
+    return await response.json();
+  },
 };

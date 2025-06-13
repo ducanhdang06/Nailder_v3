@@ -81,7 +81,7 @@ const DesignDetailScreen = ({ route, navigation }) => {
         />
 
         {/* Design Information */}
-        <DesignInfo design={design} />
+        <DesignInfo design={design} navigation={navigation} />
       </ScrollView>
 
       {/* Bottom Action Buttons */}
