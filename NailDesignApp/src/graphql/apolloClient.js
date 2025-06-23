@@ -1,10 +1,11 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { fetchAuthSession } from "aws-amplify/auth";
+import { GRAPHQL_ENDPOINT } from "../config";
 
 // HTTP Link for queries and mutations
 const httpLink = new HttpLink({
-  uri: "https://25ghz7i5pvfvdb6shrscoefuky.appsync-api.us-west-2.amazonaws.com/graphql",
+  uri: GRAPHQL_ENDPOINT,
 });
 
 // Auth link to attach JWT
