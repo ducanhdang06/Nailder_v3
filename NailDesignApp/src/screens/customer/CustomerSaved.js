@@ -115,6 +115,7 @@ export default function CustomerSaved({ navigation, ...props }) {
           />
         )}
       </View>
+      <View style={{ height: 40 }} />
     </SafeAreaView>
   );
 }
