@@ -2,27 +2,32 @@ import React from "react";
 import { SafeAreaView } from "react-native";
 import { useUser } from "../../context/userContext";
 import { useChat } from "../../hooks/useChat";
-import { 
-  createOtherUserInfo, 
-  createDesignInfo, 
+import {
+  createOtherUserInfo,
+  createDesignInfo,
   validateChatParams,
-  getUserRole 
+  getUserRole,
 } from "../../utils/chatUtils";
 import ChatHeader from "../../components/Chat/ChatHeader";
 import MessageList from "../../components/Chat/MessageList";
 import MessageInput from "../../components/Chat/MessageInput";
-import { LoadingView, ErrorView, AuthErrorView } from "../../components/Chat/ChatLoadingError";
+import {
+  LoadingView,
+  ErrorView,
+  AuthErrorView,
+} from "../../components/Chat/ChatLoadingError";
 import { ChatScreenStyles } from "../../styles/chatScreenStyles";
 
 const TechnicianChatScreen = ({ route, navigation }) => {
   // Get data from navigation
-  const { chat_id, customer_id, design, otherUserName, designTitle } = route.params;
-  
+  const { chat_id, customer_id, design, otherUserName, designTitle } =
+    route.params;
+
   // Get current user info
   const { user } = useUser();
   const userId = user?.sub;
   const currentUserRole = getUserRole(user);
-  
+
   // Security check
   if (!user || !userId) {
     return <AuthErrorView userType="Technician" />;
@@ -47,7 +52,11 @@ const TechnicianChatScreen = ({ route, navigation }) => {
   } = useChat(chat_id, userId);
 
   // Setup user and design info for display
-  const otherUser = createOtherUserInfo(customer_id, otherUserName, currentUserRole);
+  const otherUser = createOtherUserInfo(
+    customer_id,
+    otherUserName,
+    currentUserRole
+  );
   const designInfo = createDesignInfo(design, designTitle);
 
   // Loading state - only show on initial load
